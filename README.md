@@ -6,7 +6,7 @@ Discord • GunsLol • Avis
 🎮 GunsLol : https://guns.lol/2437
 
 💬 Discord :
-https://discord.gg/gg28Cn7nat
+https://discord.gg/jkz5Gn6rMs
 
 Kernel-Tools est une suite d’outils multifonctions développée en Python par 2437.  
 Le logiciel est disponible sur Windows et Linux.  
