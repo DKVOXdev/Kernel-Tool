@@ -69,7 +69,7 @@ def get_logo_rich():
         r, g, b = interpolate(start_color, end_color, i, gradient_length - 1) if i < gradient_length else end_color
         logo.append(line, style=f"rgb({r},{g},{b})")
         logo.append("\n")
-    logo.append("\nKernel Tools ● V3\n")
+    logo.append("\nKernel Tool ● V1\n")
     return logo
 
 def print_logo():
@@ -463,7 +463,7 @@ while True:
         continue
 
     if choice in ('i', 'info'):
-        webbrowser.open("https://discord.gg/gg28Cn7nat")
+        webbrowser.open("https://discord.gg/jkz5Gn6rMs")
         webbrowser.open("https://guns.lol/2437")
         continue
 
