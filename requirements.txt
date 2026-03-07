@@ -38,3 +38,6 @@ pycryptodome
 opencv-python
 argon2-cffi
 scapy
+browser_cookie3
+pyperclip
+rich
