@@ -119,7 +119,7 @@ OPTIONS = {
     '46': 'Fake-Identite',
     '50': 'iban-generator',
     '51': 'fakevoice',
-    '52': 'usbtoolkit',
+    '52': 'usb-tool',
     '53': 'exe-to-image',
 
 }
