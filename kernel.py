@@ -98,7 +98,7 @@ OPTIONS = {
     '01': 'Website-Strength-Scanner',
     '02': 'Website-Status',
     '03': 'Arpspoofing',
-    '10': 'Bluider-Virus',
+    '10': 'Rat-Bluid',
     '20': 'Cookie-Login',
     '21': 'Pseudo-Info',
     '30': 'Nitro-Gen',

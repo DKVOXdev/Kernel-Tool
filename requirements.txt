@@ -30,7 +30,6 @@ frozenlist
 aiosignal
 Pillow
 psutil
-GPUtil
 screeninfo
 keyboard
 pyautogui
@@ -38,6 +37,6 @@ pycryptodome
 opencv-python
 argon2-cffi
 scapy
-browser_cookie3
 pyperclip
 rich
+comtypes
