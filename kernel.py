@@ -99,6 +99,8 @@ OPTIONS = {
     '02': 'Website-Status',
     '03': 'Arpspoofing',
     '10': 'Rat-Bluid',
+    '11': 'Grabber-Build',
+    '12': 'Stealer-Build',
     '20': 'Cookie-Login',
     '21': 'Pseudo-Info',
     '30': 'Nitro-Gen',
@@ -147,7 +149,7 @@ MENU_PAGES = {
     },
     '6': {
         'title': ' Paid ',
-        'categories': [{'title': ' Paid ', 'options': ['10'], 'color': '#4444FF'}]
+        'categories': [{'title': ' Paid ', 'options': ['10','11','12'], 'color': '#4444FF'}]
     }
 }
 
