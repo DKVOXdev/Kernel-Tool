@@ -149,7 +149,7 @@ MENU_PAGES = {
     },
     '6': {
         'title': ' Paid ',
-        'categories': [{'title': ' Paid ', 'options': ['10','11','12'], 'color': '#4444FF'}]
+        'categories': [{'title': ' Malware Build ', 'options': ['10','11','12'], 'color': '#4444FF'}]
     }
 }
 
