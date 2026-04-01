@@ -1,5 +1,3 @@
-GPUtil
-Pillow
 aiohttp
 aiosignal
 argon2-cffi
@@ -18,12 +16,15 @@ edge-tts
 fade
 faker
 frozenlist
+GPUtil
 idna
 instaloader
 keyboard
 multidict
+numpy
 opencv-python
 phonenumbers
+Pillow
 psutil
 pyautogui
 pycryptodome
@@ -33,11 +34,15 @@ pyinstaller-hooks-contrib
 pyperclip
 pystyle
 pywin32
+PyYAML
 requests
 rich
 scapy
 screeninfo
 selenium
+sounddevice
+soundfile
 urllib3
+wave
 whois
 yarl
