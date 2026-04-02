@@ -46,3 +46,4 @@ urllib3
 wave
 whois
 yarl
+pycaw
