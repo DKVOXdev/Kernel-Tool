@@ -5,15 +5,13 @@
 
 ● GunsLol: https://guns.lol/2437
 
+● Discord: https://discord.gg/jkz5Gn6rMs
+
 ● Version: V1
 
-Multifunctional Tools
-Discord • GunsLol • Reviews
+## Multifunctional Tools
 
-🎮 GunsLol: https://guns.lol/2437
-💬 Discord: https://discord.gg/jkz5Gn6rMs
-
-Kernel-Tools is a multifunctional toolkit developed in Python by 2437.
+Kernel-Tools is a multifunctional toolkit developed in Python
 The software is available on Windows and Linux.
 The interface and tools are provided in English.
 
