@@ -1,11 +1,11 @@
 ## 👨‍💻 Credits:
-• Developed by: 2437
+● Developed by: 2437
 
-• GitHub: github.com/DKVOXdev/Kernel-Tool
+● GitHub: https://github.com/DKVOXdev
 
-• GunsLol: guns.lol/2437
+● GunsLol: https://guns.lol/2437
 
-• Version: V1
+● Version: V1
 
 Multifunctional Tools
 Discord • GunsLol • Reviews
