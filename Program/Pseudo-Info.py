@@ -2,10 +2,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -16,8 +16,8 @@ import random
 import os
 import platform
 
-C = "[96m"
-R = "[0m"
+C = "\033[96m"
+R = "\033[0m"
 
 INFO = f"{C}[INFO]{R}"
 INFO_ADD = f"{C}[+]{R}"
@@ -41,18 +41,18 @@ def ChoiceUserAgent():
     return random.choice(USER_AGENTS)
 
 def ErrorUsername():
-    print(f"[{current_time_hour()}] {ERROR} Nom d'utilisateur invalide ou erreur API.{R}")
-    input(f"{C}Appuyez sur Entrée pour réessayer...{R}")
+    print(f"[{current_time_hour()}] {ERROR} Invalid username or API error.{R}")
+    input(f"{C}Press Enter to try again...{R}")
 
 def Continue():
-    input(f"{C}Appuyez sur Entrée pour revenir au menu...{R}")
+    input(f"{C}Press Enter to return to menu...{R}")
 
 def get_roblox_info(username_input):
     user_agent = ChoiceUserAgent()
     headers = {"User-Agent": user_agent}
     clear_screen()
     print(f"[{current_time_hour()}] {INFO} Selected User-Agent: {C}{user_agent}{R}")
-    print(f"[{current_time_hour()}] {WAIT} Information Recovery...{R}")
+    print(f"[{current_time_hour()}] {WAIT} Retrieving information...{R}")
     time.sleep(0.8)
     try:
         response = requests.post(
@@ -86,7 +86,7 @@ def get_roblox_info(username_input):
 def main():
     while True:
         clear_screen()
-        username_input = input(f"[{current_time_hour()}] {INPUT} Username Roblox -> {R}").strip()
+        username_input = input(f"[{current_time_hour()}] {INPUT} Roblox Username -> {R}").strip()
         if not username_input:
             continue
         info = get_roblox_info(username_input)

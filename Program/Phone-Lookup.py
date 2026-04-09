@@ -2,10 +2,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -13,8 +13,8 @@ import phonenumbers
 from phonenumbers import geocoder, carrier, timezone
 import os
 
-C = "[96m"
-R = "[0m"
+C = "\033[96m"
+R = "\033[0m"
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -43,18 +43,18 @@ def track(phone_number):
     try:
         parsed = phonenumbers.parse(f"+{phone_number}", None)
         if not phonenumbers.is_valid_number(parsed):
-            print(f"{C}[!] Numéro invalide [!]{R}")
+            print(f"{C}[!] Invalid number [!]{R}")
             return False
         show_info(parsed)
         return True
     except:
-        print(f"{C}[!] Erreur numéro [!]{R}")
+        print(f"{C}[!] Number error [!]{R}")
         return False
 
 if __name__ == "__main__":
     while True:
         clear_console()
-        num = input(f"{C}📞 Numéro: {R}").strip()
+        num = input(f"{C}Number: {R}").strip()
 
         if not num or num.lower() == "exit":
             break
@@ -62,7 +62,6 @@ if __name__ == "__main__":
         ok = track(num)
 
         if ok:
-            next_action = input(f"
-{C}Entrée pour revenir au menu: {R}").strip()
+            next_action = input(f"\n{C}Press Enter to return to menu: {R}").strip()
             if not next_action:
                 break

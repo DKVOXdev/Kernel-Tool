@@ -1,10 +1,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -14,8 +14,6 @@ from colorama import Fore, Style, init
 import fade
 from datetime import datetime
 from collections import defaultdict
-import hashlib
-import json
 
 init(autoreset=True)
 
@@ -108,14 +106,14 @@ def count_starred_projects(username):
 def main():
     clear_console()
     ascii_logo()
-    username = input("🔎 Enter GitHub username: ").strip()
+    username = input(" Enter GitHub username: ").strip()
     if not username:
-        print(Fore.RED + "❌ Aucun nom d'utilisateur entré.")
+        print(Fore.RED + " No username entered.")
         return
 
     user = get_user_info(username)
     if not user:
-        print(Fore.RED + "❌ Utilisateur non trouvé.")
+        print(Fore.RED + " User not found.")
         return
 
     name, email = get_email_from_commits(username)
@@ -124,27 +122,27 @@ def main():
     projet_stars = count_starred_projects(username)
     top_languages = get_languages_stats(username)
 
-    print(Fore.GREEN + "\n🚀 GitHub User Info:\n")
-    print(f"👤 Username: {user.get('login')}")
-    print(f"📝 Name: {user.get('name')}")
-    print(f"📧 Email: {email}")
-    print(f"📦 Public Repos: {user.get('public_repos')}")
-    print(f"👥 Followers: {user.get('followers')}")
-    print(f"⭐ User Stars: {user_stars}")
-    print(f"⭐ Projet Stars: {projet_stars}")
-    print(f"🌐 Top Languages: {','.join(top_languages)}")
-    print(f"📍 Location: {user.get('location')}")
-    print(f"🧾 Bio: {user.get('bio')}")
-    print(f"💼 Company: {user.get('company')}")
-    print(f"🔗 Blog: {user.get('blog')}")
+    print(Fore.GREEN + "\n GitHub User Info:\n")
+    print(f" Username        : {user.get('login')}")
+    print(f" Name            : {user.get('name')}")
+    print(f" Email           : {email}")
+    print(f" Public Repos    : {user.get('public_repos')}")
+    print(f" Followers       : {user.get('followers')}")
+    print(f" User Stars      : {user_stars}")
+    print(f" Project Stars   : {projet_stars}")
+    print(f" Top Languages   : {', '.join(top_languages)}")
+    print(f" Location        : {user.get('location')}")
+    print(f" Bio             : {user.get('bio')}")
+    print(f" Company         : {user.get('company')}")
+    print(f" Blog            : {user.get('blog')}")
     twitter = user.get("twitter_username")
-    print(f"🐦 Twitter: @{twitter}" if twitter else "🐦 Twitter: N/A")
-    print(f"🗓️ Created At: {format_date(user.get('created_at'))}")
-    print(f"⏱️ Updated At: {format_date(user.get('updated_at'))}")
-    print(f"🖼️ Avatar URL: {user.get('avatar_url')}")
-    print(f"🔗 GitHub URL: {user.get('html_url')}")
+    print(f" Twitter         : @{twitter}" if twitter else " Twitter         : N/A")
+    print(f" Created At      : {format_date(user.get('created_at'))}")
+    print(f" Updated At      : {format_date(user.get('updated_at'))}")
+    print(f" Avatar URL      : {user.get('avatar_url')}")
+    print(f" GitHub URL      : {user.get('html_url')}")
 
-    input("\n➡ Appuyez sur Entrée pour revenir au menu")
+    input("\n Press Enter to return to menu")
 
 if __name__ == "__main__":
     main()

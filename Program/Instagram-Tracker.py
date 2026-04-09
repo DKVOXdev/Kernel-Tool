@@ -2,10 +2,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -39,7 +39,7 @@ def suppress_output():
 def loading_animation(stop_event):
     spinner = itertools.cycle(["⠋","⠙","⠹","⠸","⠼","⠴","⠦","⠧","⠇","⠏"])
     while not stop_event.is_set():
-        print(f"\r{BLUE}Recherche en cours {next(spinner)}{RESET}", end="", flush=True)
+        print(f"\r{BLUE}Searching {next(spinner)}{RESET}", end="", flush=True)
         time.sleep(0.1)
     print("\r" + " " * 40 + "\r", end="")
 
@@ -59,47 +59,47 @@ def get_profile(username):
 
 def show_profile(profile):
     print(f"{BLUE}──────────────────────────────────────────────{RESET}")
-    print(f"{BLUE}👤 Nom complet       : {profile.full_name}{RESET}")
-    print(f"{BLUE}📛 Username          : {profile.username}{RESET}")
-    print(f"{BLUE}🆔 ID Instagram      : {profile.userid}{RESET}")
-    print(f"{BLUE}📝 Bio               : {profile.biography}{RESET}")
-    print(f"{BLUE}🔗 Profil            : https://instagram.com/{profile.username}{RESET}")
-    print(f"{BLUE}🖼️ Photo             : {profile.profile_pic_url}{RESET}")
-    print(f"{BLUE}📷 Publications      : {profile.mediacount}{RESET}")
-    print(f"{BLUE}👥 Abonnés           : {profile.followers}{RESET}")
-    print(f"{BLUE}👣 Abonnements       : {profile.followees}{RESET}")
-    print(f"{BLUE}✔️ Vérifié           : {'Oui' if profile.is_verified else 'Non'}{RESET}")
-    print(f"{BLUE}🔒 Privé             : {'Oui' if profile.is_private else 'Non'}{RESET}")
-    print(f"{BLUE}🏢 Compte Pro        : {'Oui' if profile.is_business_account else 'Non'}{RESET}")
+    print(f"{BLUE} Full Name         : {profile.full_name}{RESET}")
+    print(f"{BLUE} Username          : {profile.username}{RESET}")
+    print(f"{BLUE} Instagram ID      : {profile.userid}{RESET}")
+    print(f"{BLUE} Bio               : {profile.biography}{RESET}")
+    print(f"{BLUE} Profile           : https://instagram.com/{profile.username}{RESET}")
+    print(f"{BLUE} Profile Pic       : {profile.profile_pic_url}{RESET}")
+    print(f"{BLUE} Posts             : {profile.mediacount}{RESET}")
+    print(f"{BLUE} Followers         : {profile.followers}{RESET}")
+    print(f"{BLUE} Following         : {profile.followees}{RESET}")
+    print(f"{BLUE} Verified          : {'Yes' if profile.is_verified else 'No'}{RESET}")
+    print(f"{BLUE} Private           : {'Yes' if profile.is_private else 'No'}{RESET}")
+    print(f"{BLUE} Business Account  : {'Yes' if profile.is_business_account else 'No'}{RESET}")
 
     if profile.is_business_account:
-        print(f"{BLUE}🏷️ Catégorie Pro     : {profile.business_category_name}{RESET}")
+        print(f"{BLUE} Business Category : {profile.business_category_name}{RESET}")
 
     print(f"{BLUE}──────────────────────────────────────────────{RESET}")
 
     if not profile.is_private:
         try:
             for i, post in enumerate(profile.get_posts()):
-                print(f"{BLUE}📌 Post {i+1}{RESET}")
-                print(f"{BLUE}🔗 https://www.instagram.com/p/{post.shortcode}/{RESET}")
-                print(f"{BLUE}📅 Date        : {post.date}{RESET}")
-                print(f"{BLUE}❤️ Likes       : {post.likes}{RESET}")
-                print(f"{BLUE}💬 Commentaires: {post.comments}{RESET}")
-                print(f"{BLUE}📝 Légende     : {post.caption if post.caption else 'Aucune'}{RESET}")
+                print(f"{BLUE} Post {i+1}{RESET}")
+                print(f"{BLUE} URL      : https://www.instagram.com/p/{post.shortcode}/{RESET}")
+                print(f"{BLUE} Date     : {post.date}{RESET}")
+                print(f"{BLUE} Likes    : {post.likes}{RESET}")
+                print(f"{BLUE} Comments : {post.comments}{RESET}")
+                print(f"{BLUE} Caption  : {post.caption if post.caption else 'None'}{RESET}")
                 print(f"{BLUE}──────────────────────────────────────────────{RESET}")
                 if i == 4:
                     break
         except:
             pass
     else:
-        print(f"{BLUE}🔒 Compte privé : posts non accessibles{RESET}")
+        print(f"{BLUE} Private account: posts not accessible{RESET}")
 
 if __name__ == "__main__":
     while True:
         clear_console()
-        username = input(f"{BLUE}🔎 Username Instagram: {RESET}").strip()
+        username = input(f"{BLUE} Instagram Username: {RESET}").strip()
         if not username:
-            print(f"{BLUE}Au revoir !{RESET}")
+            print(f"{BLUE}Goodbye!{RESET}")
             break
 
         stop_event = threading.Event()
@@ -111,7 +111,7 @@ if __name__ == "__main__":
         except:
             stop_event.set()
             t.join()
-            print(f"{BLUE}❌ Username introuvable{RESET}")
+            print(f"{BLUE} Username not found{RESET}")
             time.sleep(1.5)
             continue
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
         clear_console()
         show_profile(profile)
 
-        nxt = input(f"\n{BLUE}Entrée revenir au menu: {RESET}").strip()
+        nxt = input(f"\n{BLUE} Press Enter to return to menu: {RESET}").strip()
         if not nxt:
-            print(f"{BLUE}Au revoir !{RESET}")
+            print(f"{BLUE}Goodbye!{RESET}")
             break

@@ -1,10 +1,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -29,41 +29,50 @@ def clear():
 
 def lookup(ip):
     try:
-        r = requests.get(f"http://ip-api.com/json/{ip}?fields=status,message,query,country,regionName,city,zip,isp,org,timezone,lat,lon", timeout=10)
+        r = requests.get(f"http://ip-api.com/json/{ip}?fields=status,message,query,country,regionName,city,zip,isp,org,timezone,lat,lon,proxy,hosting", timeout=10)
         data = r.json()
 
         if data.get("status") != "success":
-            print(f"{C}Erreur API : {data.get('message','N/A')}{R}")
+            print(f"{C}API Error: {data.get('message', 'N/A')}{R}")
             return
 
         lat = data.get("lat", "N/A")
         lon = data.get("lon", "N/A")
 
+        is_proxy = data.get("proxy", False)
+        is_hosting = data.get("hosting", False)
+
+        vpn_detected = is_proxy or is_hosting
+        vpn_color = "\033[91m" if vpn_detected else "\033[92m"
+        vpn_status = str(vpn_detected)
+
         print(f"{C}┌──────────────────────────────────────────────┐{R}")
         print(f"{C}│               IP LOOKUP RESULT               │{R}")
         print(f"{C}├──────────────────────────────────────────────┤{R}")
         print(f"{C}│ IP        │ {data.get('query','N/A'):<36} │{R}")
-        print(f"{C}│ Pays      │ {data.get('country','N/A'):<36} │{R}")
-        print(f"{C}│ Région    │ {data.get('regionName','N/A'):<36} │{R}")
-        print(f"{C}│ Ville     │ {data.get('city','N/A'):<36} │{R}")
-        print(f"{C}│ Postal    │ {data.get('zip','N/A'):<36} │{R}")
+        print(f"{C}│ Country   │ {data.get('country','N/A'):<36} │{R}")
+        print(f"{C}│ Region    │ {data.get('regionName','N/A'):<36} │{R}")
+        print(f"{C}│ City      │ {data.get('city','N/A'):<36} │{R}")
+        print(f"{C}│ ZIP       │ {data.get('zip','N/A'):<36} │{R}")
         print(f"{C}│ ISP/Org   │ {data.get('isp','N/A'):<36} │{R}")
         print(f"{C}│ Timezone  │ {data.get('timezone','N/A'):<36} │{R}")
         print(f"{C}│ Latitude  │ {lat:<36} │{R}")
         print(f"{C}│ Longitude │ {lon:<36} │{R}")
         print(f"{C}│ Maps      │ https://maps.google.com/?q={lat},{lon:<9} │{R}")
+        print(f"{C}├──────────────────────────────────────────────┤{R}")
+        print(f"{C}│ VPN/Proxy │ {vpn_color}{vpn_status:<36}{R}{C} │{R}")
         print(f"{C}└──────────────────────────────────────────────┘{R}")
 
     except Exception as e:
-        print(f"{C}Erreur connexion ou API : {e}{R}")
+        print(f"{C}Connection or API error: {e}{R}")
 
 def main():
     clear()
-    ip = input(f"{C}IP : {R}").strip()
+    ip = input(f"{C}Enter IP: {R}").strip()
     if ip:
         clear()
         lookup(ip)
-        input(f"\n{C}Appuyez sur Entrée pour revenir au menu principal{R}")
+        input(f"\n{C}Press Enter to return to the main menu{R}")
 
 if __name__ == "__main__":
     main()
