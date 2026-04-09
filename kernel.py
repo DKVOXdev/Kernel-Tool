@@ -1,10 +1,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -126,14 +126,12 @@ OPTIONS = {
     '41': 'Mail-Info',
     '42': 'Phone-Lookup',
     '43': 'Username-Tracker',
-    '44': 'Instagram-Tracker',
     '45': 'Lookup-Ghitub',
     '46': 'Fake-Identite',
     '50': 'iban-generator',
     '51': 'fakevoice',
     '52': 'usb-tool',
     '53': 'exe-to-image',
-
 }
 
 MENU_PAGES = {
@@ -143,7 +141,7 @@ MENU_PAGES = {
     },
     '2': {
         'title': ' OSINT ',
-        'categories': [{'title': ' OSINT & Recon ', 'options': ['40','41','42','43','44','45','46'], 'color': '#00D4FF'}]
+        'categories': [{'title': ' OSINT & Recon ', 'options': ['40','41','42','43','45','46'], 'color': '#00D4FF'}]
     },
     '3': {
         'title': ' Roblox ',

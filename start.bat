@@ -1,5 +1,5 @@
 @echo off
-title Kernel-Tools - Installation et Lancement
+title Kernel-Tools - Setup and Launch
 color 0A
 
 echo ========================================
@@ -7,103 +7,102 @@ echo    Kernel-Tools - Auto Setup
 echo ========================================
 echo.
 
-REM Vérifier si Python 3.14 est déjà installé
+REM Check if Python 3.14 is already installed
 python --version 2>nul | findstr /R "3\.14" >nul
 if %errorlevel% equ 0 (
-    echo [OK] Python 3.14 est deja installe
-    echo [INFO] Mise a jour de pip...
+    echo [OK] Python 3.14 is already installed
+    echo [INFO] Updating pip...
     python -m pip install --upgrade pip
     echo.
     goto install_requirements
 )
 
-echo [INFO] Python 3.14 n'est pas detecte
-echo [INFO] Telechargement de Python 3.14.3...
+echo [INFO] Python 3.14 was not detected
+echo [INFO] Downloading Python 3.14.4...
 
-REM Télécharger Python 3.14.3 (derniere version stable)
-set PYTHON_URL=https://www.python.org/ftp/python/3.14.3/python-3.14.3-amd64.exe
-set PYTHON_INSTALLER=python-3.14.3-installer.exe
+REM Download Python 3.14.4 (latest stable version)
+set PYTHON_URL=https://www.python.org/ftp/python/3.14.4/python-3.14.4-amd64.exe
+set PYTHON_INSTALLER=python-3.14.4-installer.exe
 
-echo Telechargement en cours...
+echo Downloading, please wait...
 powershell -Command "& {Invoke-WebRequest -Uri '%PYTHON_URL%' -OutFile '%PYTHON_INSTALLER%'}"
 
 if not exist "%PYTHON_INSTALLER%" (
-    echo [ERREUR] Echec du telechargement de Python
+    echo [ERROR] Failed to download Python
     pause
     exit /b 1
 )
 
-echo [INFO] Installation de Python 3.14.3...
-echo Veuillez patienter, cela peut prendre quelques minutes...
+echo [INFO] Installing Python 3.14.4...
+echo Please wait, this may take a few minutes...
 
-REM Installer Python avec toutes les fonctionnalites et ajout au PATH
+REM Install Python with all features and add to PATH
 "%PYTHON_INSTALLER%" /quiet InstallAllUsers=1 PrependPath=1 Include_pip=1 AssociateFiles=1
 
-echo [INFO] Attente de la finalisation de l'installation...
+echo [INFO] Waiting for installation to complete...
 timeout /t 5 /nobreak >nul
 
-echo [INFO] Nettoyage de l'installateur...
+echo [INFO] Cleaning up installer...
 del "%PYTHON_INSTALLER%"
 
-echo [OK] Python 3.14.3 installe avec succes
+echo [OK] Python 3.14.4 installed successfully
 echo.
 
-REM Mise a jour de pip
-echo [INFO] Mise a jour de pip...
+REM Update pip
+echo [INFO] Updating pip...
 python -m pip install --upgrade pip
 echo.
 
 :install_requirements
 echo ========================================
-echo    Installation des dependances
+echo    Installing Dependencies
 echo ========================================
 echo.
 
-REM Verifier si requirements.txt existe
+REM Check if requirements.txt exists
 if not exist "requirements.txt" (
-    echo [ERREUR] Le fichier requirements.txt est introuvable
-    echo Assurez-vous que ce fichier batch est dans le meme dossier que requirements.txt
+    echo [ERROR] File requirements.txt not found
+    echo Make sure this batch file is in the same folder as requirements.txt
     pause
     exit /b 1
 )
 
-echo [INFO] Installation des packages depuis requirements.txt...
+echo [INFO] Installing packages from requirements.txt...
 python -m pip install -r requirements.txt
 
 if %errorlevel% neq 0 (
-    echo [ERREUR] Echec de l'installation des dependances
+    echo [ERROR] Failed to install dependencies
     pause
     exit /b 1
 )
 
-echo [OK] Dependances installees avec succes
+echo [OK] Dependencies installed successfully
 echo.
 
 :launch_tool
 echo ========================================
-echo    Lancement de Kernel-tools 
+echo    Launching Kernel-Tools
 echo ========================================
 echo.
 
-REM Verifier si le fichier Python existe
+REM Check if the Python file exists
 if not exist "kernel.py" (
-    echo [ERREUR] Le fichier 'kernel.py' est introuvable
-    echo Assurez-vous que ce fichier batch est dans le meme dossier que le script Python
+    echo [ERROR] File 'kernel.py' not found
+    echo Make sure this batch file is in the same folder as the Python script
     pause
     exit /b 1
 )
 
-echo [INFO] Lancement de kernel.py...
+echo [INFO] Launching kernel.py...
 echo.
 python "kernel.py"
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ERREUR] Le programme s'est termine avec une erreur
+    echo [ERROR] The program exited with an error
     pause
     exit /b 1
 )
 
 echo.
-echo [INFO] Programme termine
-pause
+echo [INFO] Program finished
