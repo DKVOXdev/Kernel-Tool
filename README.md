@@ -1,59 +1,54 @@
-# Kernel-Tools
+👨‍💻 Credits:
+• Developed by: 2437
+• GitHub: github.com/DKVOXdev/Kernel-Tool
+• GunsLol: guns.lol/2437
+• Version: V1
 
-👨‍💻 Crédits :
-• Développé par : 2437
-• GitHub : github.com/DKVOXdev/Kernel-Tool
-• GunsLol : guns.lol/2437
-• Version : V1
+Multifunctional Tools
+Discord • GunsLol • Reviews
 
-Outils multifonctions 
-Discord • GunsLol • Avis
+🎮 GunsLol: https://guns.lol/2437
+💬 Discord: https://discord.gg/jkz5Gn6rMs
 
-🎮 GunsLol : https://guns.lol/2437
+Kernel-Tools is a multifunctional toolkit developed in Python by 2437.
+The software is available on Windows and Linux.
+The interface and tools are provided in English.
 
-💬 Discord :
-https://discord.gg/jkz5Gn6rMs
+✔ No malware
+✔ No backdoors
+✔ Free for everyone
+✔ Frequent updates
 
-Kernel-Tools est une suite d’outils multifonctions développée en Python par 2437.  
-Le logiciel est disponible sur Windows et Linux.  
-L’interface et les outils sont fournis en anglais.
+The software is open-source and provided only for educational and verification purposes to ensure no malicious programs are included.
 
-✔ Aucun logiciel malveillant 
-✔ Aucune porte dérobée  
-✔ Gratuit pour tous  
-✔ Mises à jour fréquentes  
+## Included Features
+🔍 Analysis & OSINT
+🛠 Various Utilities
+🧱 Builders
+🎮 Roblox Modules
+💬 Discord Tools
+➕ And much more
 
-Le logiciel est open-source et mis à disposition uniquement à des fins éducatives et de vérification, afin de garantir l’absence de programmes malveillants.
+## Security & Transparency
+Kernel-Tools contains no malware, backdoors, or hidden code.
+The project is designed to be used responsibly and legally.
 
-## Fonctionnalités incluses
-🔍 Analyse & OSINT  
-🛠 Utilitaires divers  
-🧱 Constructeurs  
-🎮 Modules Roblox  
-💬 Outils Discord  
-➕ Et bien plus encore
-
-## Sécurité & transparence
-Kernel-Tools ne contient aucun malware, aucune backdoor et aucun code caché.  
-Le projet est conçu pour être utilisé dans un cadre responsable et légal.
-
-## ⚠ Protection du code
-Le code est **protégé par licence**.  
-Il est **interdit de modifier le code directement**.  
-Si vous souhaitez apporter une modification ou proposer des changements, **demandez d’abord l’autorisation à l’auteur**.  
-Pour tout problème ou erreur, ouvrez un ticket sur notre Discord :  
+## ⚠ Code Protection
+The code is protected by license.
+Direct modification of the code is prohibited.
+If you want to make changes or suggestions, ask the author first.
+For any issues or errors, open a ticket on our Discord:
 👉 https://discord.gg/gg28Cn7nat
 
-## Clause de non-responsabilité
-Kernel-Tools a été développé exclusivement à des fins éducatives.  
-L’utilisation du logiciel est à vos risques et responsabilités.  
-Tous les scripts sont sûrs et les fichiers détectés par les antivirus sont de faux positifs, aucune menace réelle.
+## Disclaimer
+Kernel-Tools is developed exclusively for educational purposes.
+Use of the software is at your own risk.
+All scripts are safe, and files flagged by antivirus software are false positives, no real threat exists.
 
-## La perçu du Kernel-Tools
-
-![Image1](https://i.postimg.cc/c4fPkttV/Kernel-Tools.jpg)  
-![Image2](https://i.postimg.cc/fLj0gKZ9/Kernel-Tools.jpg)  
-![Image3](https://i.postimg.cc/qM9MyKVK/Kernel-Tools.jpg)  
-![Image4](https://i.postimg.cc/cC31b1fR/Kernel-Tools.jpg)  
-![Image5](https://i.postimg.cc/598MTRZY/Kernel-Tools.jpg)  
+## Kernel-Tools Preview
+![Image1](https://i.postimg.cc/c4fPkttV/Kernel-Tools.jpg)
+![Image2](https://i.postimg.cc/fLj0gKZ9/Kernel-Tools.jpg)
+![Image3](https://i.postimg.cc/qM9MyKVK/Kernel-Tools.jpg)
+![Image4](https://i.postimg.cc/cC31b1fR/Kernel-Tools.jpg)
+![Image5](https://i.postimg.cc/598MTRZY/Kernel-Tools.jpg)
 ![Image6](https://i.postimg.cc/Jnbd69Gc/Kernel-Tools.jpg)
