@@ -1,4 +1,4 @@
-👨‍💻 Credits:
+#👨‍💻 Credits:
 • Developed by: 2437
 • GitHub: github.com/DKVOXdev/Kernel-Tool
 • GunsLol: guns.lol/2437
