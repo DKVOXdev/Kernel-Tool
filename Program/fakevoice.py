@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 
 global _AVAILABLE_VOICE_SHORTNAMES
 import os
@@ -77,30 +87,53 @@ async def generate_femme_voice(text, voix='fr_eloise'):
             print(f'{Fore.RED}[ERROR] {e}{Style.RESET_ALL}')
             return None
 def main():
-    ascii_art = '\n                 .#@.           \n               .%@@@.           \n             :@@@@@@.  ...      \n          .:@@@@@@@@. .%@@@=.   \n         -@@@@@@@@@@.    .#@@=. \n-@@@@@@-*@@@@@@@@@@@. .@@: .@@* \n@@@@@@@-*@@@@@@@@@@@.  .%@#..@@+\n@@@@@@@-*@@@@@@@@@@@.   .%@* .@@\n@@@@@@@-*@@@@@@@@@@@.    :@#  @@\n@@@@@@@-*@@@@@@@@@@@.   .%@* .@@\n@@@@@@@-*@@@@@@@@@@@.  .%@#..@@+\n-@@@@@@-*@@@@@@@@@@@. .@@: .@@* \n         -@@@@@@@@@@.    .*@@=. \n          .:@@@@@@@@. .#@@@=.   \n             :@@@@@@.  ...      \n               .%@@@.           \n                 .#@.                                         \n    '
+    ascii_art = '
+                 .#@.           
+               .%@@@.           
+             :@@@@@@.  ...      
+          .:@@@@@@@@. .%@@@=.   
+         -@@@@@@@@@@.    .#@@=. 
+-@@@@@@-*@@@@@@@@@@@. .@@: .@@* 
+@@@@@@@-*@@@@@@@@@@@.  .%@#..@@+
+@@@@@@@-*@@@@@@@@@@@.   .%@* .@@
+@@@@@@@-*@@@@@@@@@@@.    :@#  @@
+@@@@@@@-*@@@@@@@@@@@.   .%@* .@@
+@@@@@@@-*@@@@@@@@@@@.  .%@#..@@+
+-@@@@@@-*@@@@@@@@@@@. .@@: .@@* 
+         -@@@@@@@@@@.    .*@@=. 
+          .:@@@@@@@@. .#@@@=.   
+             :@@@@@@.  ...      
+               .%@@@.           
+                 .#@.                                         
+    '
     print(f'{Fore.RED}{ascii_art}{Style.RESET_ALL}')
     print(f'{Fore.RED}' + '══════════════════════════════════════════════════' + f'{Style.RESET_ALL}')
     print(f'{Fore.RED}   FAKE VOICE GENERATOR - ADULT FEMALE VOICE{Style.RESET_ALL}')
     print(f'{Fore.RED}' + '══════════════════════════════════════════════════' + f'{Style.RESET_ALL}')
-    print(f'{Fore.RED}\n Voice Options:{Style.RESET_ALL}')
+    print(f'{Fore.RED}
+ Voice Options:{Style.RESET_ALL}')
     print(f'{Fore.RED}  1. Natural Young Voice (Eloise) - RECOMMENDED{Style.RESET_ALL}')
     print(f'{Fore.RED}  2. Natural Voice (Denise){Style.RESET_ALL}')
     print(f'{Fore.RED}  3. Quebec Voice (Sylvie) - Very Natural{Style.RESET_ALL}')
     print(f'{Fore.RED}  4. SEXY Adult Voice{Style.RESET_ALL}')
-    voix_choice = input(f'\n{Fore.RED}Choose voice (1-4) [1] → {Style.RESET_ALL}').strip() or '1'
+    voix_choice = input(f'
+{Fore.RED}Choose voice (1-4) [1] → {Style.RESET_ALL}').strip() or '1'
     voix_map = {'1': 'fr_eloise', '2': 'fr_denise', '3': 'fr_claire', '4': 'fr_sexy'}
     voix = voix_map.get(voix_choice, 'fr_eloise')
-    print(f'\n{Fore.RED}' + '──────────────────────────────────────────────────' + f'{Style.RESET_ALL}')
+    print(f'
+{Fore.RED}' + '──────────────────────────────────────────────────' + f'{Style.RESET_ALL}')
     text = input(f'{Fore.RED} Fake Voice: {Style.RESET_ALL}').strip()
     print(f'{Fore.RED}' + '──────────────────────────────────────────────────' + f'{Style.RESET_ALL}')
     if not text:
         print(f'{Fore.RED} Text cannot be empty!{Style.RESET_ALL}')
     else:
         asyncio.run(generate_femme_voice(text, voix))
-        if input(f'\n{Fore.RED} Generate another voice? (y/n) [n] → {Style.RESET_ALL}').lower() == 'y':
+        if input(f'
+{Fore.RED} Generate another voice? (y/n) [n] → {Style.RESET_ALL}').lower() == 'y':
             main()
         else:
-            print(f'\n{Fore.RED} Goodbye!{Style.RESET_ALL}')
+            print(f'
+{Fore.RED} Goodbye!{Style.RESET_ALL}')
 if __name__ == '__main__':
     def clear_screen():
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -108,6 +141,8 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print(f'\n\n{Fore.RED} Stopped{Style.RESET_ALL}')
+        print(f'
+
+{Fore.RED} Stopped{Style.RESET_ALL}')
     except Exception as e:
         print(f'{Fore.RED}[ERROR] {e}{Style.RESET_ALL}')

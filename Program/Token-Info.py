@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 from Config.Util import *
 from Config.Config import *
 try:
@@ -65,7 +75,8 @@ try:
             linked_users = "None"
         
         try:
-            bio = "\n" + user_api.get('bio', 'None')
+            bio = "
+" + user_api.get('bio', 'None')
             if not bio.strip() or bio.isspace():
                 bio = "None"
         except:
@@ -92,7 +103,9 @@ try:
                     if owned_guilds:
                         for guild in owned_guilds:
                             owned_guild_names.append(f"{guild['name']} ({guild['id']})")
-                        owned_guild_names = "\n" + "\n".join(owned_guild_names)
+                        owned_guild_names = "
+" + "
+".join(owned_guild_names)
                 except:
                     owned_guild_count = "None"
                     owned_guild_names = "None" 
@@ -128,13 +141,15 @@ try:
                     unprefered_flags = [64, 128, 256, 1048704]
                     friend_data = f"{friend['user']['username']}#{friend['user']['discriminator']} ({friend['user']['id']})"
 
-                    if len('\n'.join(friends)) + len(friend_data) >= 1024:
+                    if len('
+'.join(friends)) + len(friend_data) >= 1024:
                         break
 
                     friends.append(friend_data)
 
                 if len(friends) > 0:
-                    friends = '\n' + ' / '.join(friends)
+                    friends = '
+' + ' / '.join(friends)
                 else:
                     friends = "None"
             else:
@@ -149,12 +164,17 @@ try:
                 for gift_code in gift_codes_list:
                     promotion_name = gift_code['promotion']['outbound_title']
                     code_value = gift_code['code']
-                    code_data = f"Gift: {promotion_name}\nCode: {code_value}"
-                    if len('\n\n'.join(codes_list)) + len(code_data) >= 1024:
+                    code_data = f"Gift: {promotion_name}
+Code: {code_value}"
+                    if len('
+
+'.join(codes_list)) + len(code_data) >= 1024:
                         break
                     codes_list.append(code_data)
                 if len(codes_list) > 0:
-                    gift_codes = '\n\n'.join(codes_list)
+                    gift_codes = '
+
+'.join(codes_list)
                 else:
                     gift_codes = "None"
             else:
@@ -202,4 +222,3 @@ try:
     Reset()
 except Exception as e:
     Error(e)
-

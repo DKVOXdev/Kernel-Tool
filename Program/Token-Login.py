@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 from Config.Util import *
 from Config.Config import *
 import sys
@@ -73,7 +83,8 @@ try:
         
         driver.get("https://discord.com/login")
         print(f"{BEFORE + AFTER} {WAIT} Establishing Token Connection..{blue}")
-        driver.execute_script(login_script + f'\nlogin("{discord_token}")')
+        driver.execute_script(login_script + f'
+login("{discord_token}")')
         time.sleep(4)
         print(f"{BEFORE + AFTER} {INFO} Token Successfully Connected !{blue}")
         print(f"{BEFORE + AFTER} {INFO} If you exit the tool, {browser_name} will close!{blue}")
@@ -85,4 +96,3 @@ try:
         Reset()
 except Exception as e:
     Error(e)
-

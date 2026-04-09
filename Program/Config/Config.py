@@ -1,5 +1,14 @@
-import os
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
+import os
 import sys
 
 
@@ -8,33 +17,33 @@ import sys
 
 class color:
 
-    RESET = "\033[0m"
+    RESET = "[0m"
 
-    RED = "\033[91m"
+    RED = "[91m"
 
-    GREEN = "\033[92m"
+    GREEN = "[92m"
 
-    YELLOW = "\033[93m"
+    YELLOW = "[93m"
 
-    BLUE = "\033[94m"
+    BLUE = "[94m"
 
-    MAGENTA = "\033[95m"
+    MAGENTA = "[95m"
 
-    CYAN = "\033[96m"
+    CYAN = "[96m"
 
-    WHITE = "\033[97m"
+    WHITE = "[97m"
 
 
 
 # ANSI color variables
 
-BEFORE = "\033[0;37m"
+BEFORE = "[0;37m"
 
-AFTER = "\033[0m"
+AFTER = "[0m"
 
-BEFORE_GREEN = "\033[0;32m"
+BEFORE_GREEN = "[0;32m"
 
-AFTER_GREEN = "\033[0m"
+AFTER_GREEN = "[0m"
 
 
 
@@ -60,15 +69,15 @@ INFO_ADD = "[+]"
 
 # Color variables
 
-white = "\033[97m"
+white = "[97m"
 
-green = "\033[92m"
+green = "[92m"
 
-red = "\033[91m"
+red = "[91m"
 
-blue = "\033[94m"
+blue = "[94m"
 
-reset = "\033[0m"
+reset = "[0m"
 
 
 
@@ -107,5 +116,3 @@ tool_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # OS name
 
 os_name = "Windows" if os.name == 'nt' else "Linux"
-
-

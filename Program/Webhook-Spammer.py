@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 from Config.Util import *
 from Config.Config import *
 
@@ -17,7 +27,8 @@ NUKE_MESSAGE = "# @everyone nuked by Kernel https://guns.lol/2437"
 KERNEL_LOGO_URL = None  # Set to your image URL, e.g., "https://i.imgur.com/yourimage.png"
 
 try:
-    print(f"{BEFORE + AFTER} {INFO} This tool will spam a Discord webhook with a fixed message.{green}\n")
+    print(f"{BEFORE + AFTER} {INFO} This tool will spam a Discord webhook with a fixed message.{green}
+")
     
     webhook_url = input(f"{BEFORE + AFTER} {INPUT} Webhook URL -> {reset}").strip()
     
@@ -67,8 +78,10 @@ try:
         while True:
             send_webhook(webhook_url)
     
-    print(f"\n{BEFORE + AFTER} {WAIT} Starting spam with {white}{threads_number}{green} threads...{green}")
-    print(f"{BEFORE + AFTER} {INFO} Message: {white}{NUKE_MESSAGE}{green}\n")
+    print(f"
+{BEFORE + AFTER} {WAIT} Starting spam with {white}{threads_number}{green} threads...{green}")
+    print(f"{BEFORE + AFTER} {INFO} Message: {white}{NUKE_MESSAGE}{green}
+")
     
     def run_threads():
         threads = []
@@ -87,7 +100,8 @@ try:
     try:
         run_threads()
     except KeyboardInterrupt:
-        print(f"\n{BEFORE + AFTER} {INFO} Stopping spam...{green}")
+        print(f"
+{BEFORE + AFTER} {INFO} Stopping spam...{green}")
         Continue()
         Reset()
     except Exception as e:
@@ -95,4 +109,3 @@ try:
 
 except Exception as e:
     Error(e)
-

@@ -1,12 +1,22 @@
 #!/usr/bin/env python3
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 import requests
 import os
 import threading
 import itertools
 import time
 
-BLUE = "\033[96m"
-RESET = "\033[0m"
+BLUE = "[96m"
+RESET = "[0m"
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -14,9 +24,9 @@ def clear_console():
 def loading_animation(stop_event):
     spinner = itertools.cycle(["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"])
     while not stop_event.is_set():
-        print(f"\r{BLUE}Recherche en cours {next(spinner)}{RESET}", end="", flush=True)
+        print(f"{BLUE}Recherche en cours {next(spinner)}{RESET}", end="", flush=True)
         time.sleep(0.1)
-    print("\r" + " " * 30 + "\r", end="")
+    print("" + " " * 30 + "", end="")
 
 def username_tracker(username):
     sites = {
@@ -49,7 +59,8 @@ def username_tracker(username):
     stop_event.set()
     t.join()
 
-    print(f"{BLUE}Résultats pour '{username}':\n{RESET}")
+    print(f"{BLUE}Résultats pour '{username}':
+{RESET}")
     for site, url, found in results:
         status = "[+]" if found else "[-]"
         print(f"{BLUE}{status} {site}: {url}{RESET}")
@@ -65,7 +76,8 @@ if __name__ == "__main__":
         clear_console()
         username_tracker(user)
 
-        again = input(f"\n{BLUE}Entrée revenir au menu: {RESET}").strip()
+        again = input(f"
+{BLUE}Entrée revenir au menu: {RESET}").strip()
         if not again:
             print(f"{BLUE}Au revoir !{RESET}")
             break

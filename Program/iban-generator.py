@@ -1,3 +1,13 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+
 import os
 import random
 from colorama import Fore, Style, init
@@ -21,7 +31,22 @@ iban_formats = {
     'IE': {'length': 22, 'bban': 'BBBBSSSSSSCCCCCCCCCC', 'name': 'Ireland'}
 }
 
-ascii_banner = Fore.RED + '\n ______  _______    ______   __    __        ________  _______    ______   __    __  _______  \n|      \\|       \\  /      \\ |  \\  |  \\      |        \\|       \\  /      \\ |  \\  |  \\|       \\ \n \\$$$$$$| $$$$$$$\\|  $$$$$$\\| $$\\ | $$      | $$$$$$$$| $$$$$$$\\|  $$$$$$\\| $$  | $$| $$$$$$$\\\n  | $$  | $$__/ $$| $$__| $$| $$$\\| $$      | $$__    | $$__| $$| $$__| $$| $$  | $$| $$  | $$\n  | $$  | $$    $$| $$    $$| $$$$\\ $$      | $$  \\   | $$    $$| $$    $$| $$  | $$| $$  | $$\n  | $$  | $$$$$$$\\| $$$$$$$$| $$\\$$ $$      | $$$$$   | $$$$$$$\\| $$$$$$$$| $$  | $$| $$  | $$\n _| $$_ | $$__/ $$| $$  | $$| $$ \\$$$$      | $$      | $$  | $$| $$  | $$| $$__/ $$| $$__/ $$\n|   $$ \\| $$    $$| $$  | $$| $$  \\$$$      | $$      | $$  | $$| $$  | $$ \\$$    $$| $$    $$\n \\$$$$$$ \\$$$$$$$  \\$$   \\$$ \\$$   \\$$       \\$$       \\$$   \\$$ \\$$   \\$$  \\$$$$$$  \\$$$$$$$ \n\n\nFRAUD IBAN GENERATOR by Kernel-Tools v1.1\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' + Style.RESET_ALL
+ascii_banner = Fore.RED + '
+ ______  _______    ______   __    __        ________  _______    ______   __    __  _______  
+|      \|       \  /      \ |  \  |  \      |        \|       \  /      \ |  \  |  \|       \ 
+ \$$$$$$| $$$$$$$\|  $$$$$$\| $$\ | $$      | $$$$$$$$| $$$$$$$\|  $$$$$$\| $$  | $$| $$$$$$$\
+  | $$  | $$__/ $$| $$__| $$| $$$\| $$      | $$__    | $$__| $$| $$__| $$| $$  | $$| $$  | $$
+  | $$  | $$    $$| $$    $$| $$$$\ $$      | $$  \   | $$    $$| $$    $$| $$  | $$| $$  | $$
+  | $$  | $$$$$$$\| $$$$$$$$| $$\$$ $$      | $$$$$   | $$$$$$$\| $$$$$$$$| $$  | $$| $$  | $$
+ _| $$_ | $$__/ $$| $$  | $$| $$ \$$$$      | $$      | $$  | $$| $$  | $$| $$__/ $$| $$__/ $$
+|   $$ \| $$    $$| $$  | $$| $$  \$$$      | $$      | $$  | $$| $$  | $$ \$$    $$| $$    $$
+ \$$$$$$ \$$$$$$$  \$$   \$$ \$$   \$$       \$$       \$$   \$$ \$$   \$$  \$$$$$$  \$$$$$$$ 
+
+
+FRAUD IBAN GENERATOR by Kernel-Tools v1.1
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+' + Style.RESET_ALL
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 def generate_bban(country_code):
@@ -40,7 +65,8 @@ def generate_multiple_ibans(country_code, count=1):
 def menu():
     clear()
     print(ascii_banner)
-    print(Fore.RED + 'Available Countries:\n' + Style.RESET_ALL)
+    print(Fore.RED + 'Available Countries:
+' + Style.RESET_ALL)
     items = list(iban_formats.items())
     col_count = 2
     rows = -(-len(items) // col_count)
@@ -54,9 +80,13 @@ def menu():
                 entry = f"|[{num}] {data['name']:<28}"
                 line_parts.append(entry)
         print(Fore.RED + ''.join(line_parts) + Style.RESET_ALL)
-    choice = input(Fore.RED + '\n\n\n→ Country : ' + Style.RESET_ALL).strip('[]')
+    choice = input(Fore.RED + '
+
+
+→ Country : ' + Style.RESET_ALL).strip('[]')
     if choice == '0':
-        print(Fore.RED + '\nClosing generator...' + Style.RESET_ALL)
+        print(Fore.RED + '
+Closing generator...' + Style.RESET_ALL)
     else:
         try:
             country_code = list(iban_formats.keys())[int(choice) - 1]
@@ -67,7 +97,8 @@ def menu():
         count = max(1, int(count))
         clear()
         print(ascii_banner)
-        print(Fore.RED + f"--- IBANs generated for {iban_formats[country_code]['name']} ---\n" + Style.RESET_ALL)
+        print(Fore.RED + f"--- IBANs generated for {iban_formats[country_code]['name']} ---
+" + Style.RESET_ALL)
         for iban in generate_multiple_ibans(country_code, count):
             print(Fore.RED + iban + Style.RESET_ALL)
 if __name__ == '__main__':

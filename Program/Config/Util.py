@@ -1,5 +1,14 @@
-import os
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# EN: 
+#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR: 
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
+import os
 import sys
 
 import time
@@ -32,19 +41,23 @@ def Title(title):
 
         box_width = min(width - 4, 70)
 
-        print(f"\n╔{'═' * box_width}╗")
+        print(f"
+╔{'═' * box_width}╗")
 
         print(f"║{title.center(box_width)}║")
 
-        print(f"╚{'═' * box_width}╝\n")
+        print(f"╚{'═' * box_width}╝
+")
 
     except:
 
-        print(f"\n╔{'═' * 70}╗")
+        print(f"
+╔{'═' * 70}╗")
 
         print(f"║{title.center(70)}║")
 
-        print(f"╚{'═' * 70}╝\n")
+        print(f"╚{'═' * 70}╝
+")
 
 
 
@@ -237,5 +250,3 @@ color_webhook = 0x00ff00
 username_webhook = "Kernel Tools"
 
 avatar_webhook = ""
-
-
