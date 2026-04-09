@@ -1,5 +1,11 @@
 # Kernel-Tools
 
+👨‍💻 Crédits :
+• Développé par : 2437
+• GitHub : github.com/DKVOXdev/Kernel-Tool
+• GunsLol : guns.lol/2437
+• Version : V1
+
 Outils multifonctions 
 Discord • GunsLol • Avis
 
