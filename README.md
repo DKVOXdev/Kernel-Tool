@@ -38,8 +38,7 @@ The project is designed to be used responsibly and legally.
 The code is protected by license.
 Direct modification of the code is prohibited.
 If you want to make changes or suggestions, ask the author first.
-For any issues or errors, open a ticket on our Discord:
-👉 https://discord.gg/gg28Cn7nat
+For any issues or errors,
 
 ## Disclaimer
 Kernel-Tools is developed exclusively for educational purposes.
