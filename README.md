@@ -1,11 +1,7 @@
 ## 👨‍💻 Credits:
 ● Developed by: 2437
 
-● GitHub: https://github.com/DKVOXdev
-
 ● GunsLol: https://guns.lol/2437
-
-● Discord: https://discord.gg/jkz5Gn6rMs
 
 ● Version: V1
 
