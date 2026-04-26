@@ -34,7 +34,11 @@ The project is designed to be used responsibly and legally.
 The code is protected by license.
 Direct modification of the code is prohibited.
 If you want to make changes or suggestions, ask the author first.
+<<<<<<< HEAD
 For any issues or errors,
+=======
+For any issues or errors
+>>>>>>> bf67875 (update)
 
 ## Disclaimer
 Kernel-Tools is developed exclusively for educational purposes.

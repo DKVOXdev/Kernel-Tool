@@ -1,10 +1,10 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------|
-# EN: 
+# EN:
 #     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-# FR: 
+# FR:
 #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
@@ -21,13 +21,16 @@ Title("Token Info")
 try:
     discord_token = Choice1TokenDiscord()
     print(f"{BEFORE + AFTER} {WAIT} Retrieving Information..{reset}")
+
     try:
         user_api = requests.get('https://discord.com/api/v8/users/@me', headers={'Authorization': discord_token}).json()
 
         token_response = requests.get('https://discord.com/api/v8/users/@me', headers={'Authorization': discord_token, 'Content-Type': 'application/json'})
 
-        if token_response.status_code == 200: token_status = "Valid"
-        else: token_status = "Invalid"
+        if token_response.status_code == 200:
+            token_status = "Valid"
+        else:
+            token_status = "Invalid"
 
         username = user_api.get('username', "None") + '#' + user_api.get('discriminator', "None")
         display_name = user_api.get('global_name', "None")
@@ -46,141 +49,112 @@ try:
         accent_color = user_api.get("accent_color", "None")
         nsfw_allowed = user_api.get('nsfw_allowed', "None")
 
-        try: account_created = datetime.fromtimestamp(((int(user_api.get('id', 'None')) >> 22) + 1420070400000) / 1000, timezone.utc)
-        except: account_created = "None"
+        try:
+            account_created = datetime.fromtimestamp(((int(user_api.get('id', 0)) >> 22) + 1420070400000) / 1000, timezone.utc)
+        except:
+            account_created = "None"
 
         try:
-            if user_api.get('premium_type', 'None') == 0:
+            premium_type = user_api.get('premium_type', 0)
+            if premium_type == 0:
                 nitro_status = 'False'
-            elif user_api.get('premium_type', 'None') == 1:
+            elif premium_type == 1:
                 nitro_status = 'Nitro Classic'
-            elif user_api.get('premium_type', 'None') == 2:
+            elif premium_type == 2:
                 nitro_status = 'Nitro Boosts'
-            elif user_api.get('premium_type', 'None') == 3:
+            elif premium_type == 3:
                 nitro_status = 'Nitro Basic'
             else:
                 nitro_status = 'False'
         except:
             nitro_status = "None"
 
-        try: avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{user_api['avatar']}.gif" if requests.get(f"https://cdn.discordapp.com/avatars/{user_id}/{user_api['avatar']}.gif").status_code == 200 else f"https://cdn.discordapp.com/avatars/{user_id}/{user_api['avatar']}.png"
-        except: avatar_url = "None"
-        
         try:
-            linked_users = user_api.get('linked_users', 'None')
-            linked_users = ' / '.join(linked_users)
-            if not linked_users.strip():
-                linked_users = "None"
+            avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{user_api.get('avatar')}.gif" if user_api.get('avatar') else "None"
+            if avatar_url != "None" and requests.get(avatar_url).status_code != 200:
+                avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{user_api.get('avatar')}.png"
         except:
-            linked_users = "None"
-        
-        try:
-            bio = "
-" + user_api.get('bio', 'None')
-            if not bio.strip() or bio.isspace():
-                bio = "None"
-        except:
-            bio = "None"
-        
-        try:
-            authenticator_types = user_api.get('authenticator_types', 'None')
-            authenticator_types = ' / '.join(authenticator_types)
-        except:
-            authenticator_types = "None"
+            avatar_url = "None"
 
+        linked_users = "None"
+        try:
+            linked = user_api.get('linked_users', [])
+            if linked:
+                linked_users = ' / '.join([f"{u.get('username', '')}#{u.get('discriminator', '')}" for u in linked])
+        except:
+            pass
+
+        bio = user_api.get('bio', "None") or "None"
+
+        authenticator_types = "None"
+        try:
+            at = user_api.get('authenticator_types', [])
+            if at:
+                authenticator_types = ' / '.join(map(str, at))
+        except:
+            pass
+
+        # Guilds
+        total_guilds = "None"
+        owned_guild_count = "None"
+        owned_guild_names = "None"
         try:
             guilds_api_response = requests.get('https://discord.com/api/v9/users/@me/guilds?with_counts=true', headers={'Authorization': discord_token})
             if guilds_api_response.status_code == 200:
                 guilds_data = guilds_api_response.json()
-                try:
-                    total_guilds = len(guilds_data)
-                except:
-                    total_guilds = "None"
-                try:
-                    owned_guilds = [guild for guild in guilds_data if guild['owner']]
-                    owned_guild_count = f"({len(owned_guilds)})"
-                    owned_guild_names = [] 
-                    if owned_guilds:
-                        for guild in owned_guilds:
-                            owned_guild_names.append(f"{guild['name']} ({guild['id']})")
-                        owned_guild_names = "
-" + "
-".join(owned_guild_names)
-                except:
-                    owned_guild_count = "None"
-                    owned_guild_names = "None" 
+                total_guilds = len(guilds_data)
+                owned_guilds = [guild for guild in guilds_data if guild.get('owner')]
+                owned_guild_count = f"({len(owned_guilds)})"
+                if owned_guilds:
+                    owned_guild_names = "\n" + "\n".join([f"{g['name']} ({g['id']})" for g in owned_guilds])
+                else:
+                    owned_guild_names = "None"
         except:
-            owned_guild_count = "None"
-            total_guilds = "None"
-            owned_guild_names = "None"
+            pass
 
-
+        # Billing
+        payment_methods = "None"
         try:
             billing_info = requests.get('https://discord.com/api/v6/users/@me/billing/payment-sources', headers={'Authorization': discord_token}).json()
             if billing_info:
-                payment_methods = []
-
-                for payment_method in billing_info:
-                    if payment_method['type'] == 1:
-                        payment_methods.append('CB')
-                    elif payment_method['type'] == 2:
-                        payment_methods.append("Paypal")
+                methods = []
+                for p in billing_info:
+                    if p.get('type') == 1:
+                        methods.append('CB')
+                    elif p.get('type') == 2:
+                        methods.append('Paypal')
                     else:
-                        payment_methods.append('Other')
-                payment_methods = ' / '.join(payment_methods)
-            else:
-                payment_methods = "None"
+                        methods.append('Other')
+                payment_methods = ' / '.join(methods)
         except:
-            payment_methods = "None"
-        
+            pass
+
+        # Friends
+        friends = "None"
         try:
             friends_list = requests.get('https://discord.com/api/v8/users/@me/relationships', headers={'Authorization': discord_token}).json()
             if friends_list:
-                friends = []
-                for friend in friends_list:
-                    unprefered_flags = [64, 128, 256, 1048704]
-                    friend_data = f"{friend['user']['username']}#{friend['user']['discriminator']} ({friend['user']['id']})"
-
-                    if len('
-'.join(friends)) + len(friend_data) >= 1024:
-                        break
-
-                    friends.append(friend_data)
-
-                if len(friends) > 0:
-                    friends = '
-' + ' / '.join(friends)
-                else:
-                    friends = "None"
-            else:
-                friends = "None"
+                f_list = []
+                for f in friends_list:
+                    u = f.get('user', {})
+                    f_list.append(f"{u.get('username', '')}#{u.get('discriminator', '')} ({u.get('id', '')})")
+                friends = '\n' + ' / '.join(f_list[:20])  # limit to avoid too long
         except:
-            friends = "None"
+            pass
 
+        # Gift codes
+        gift_codes = "None"
         try:
             gift_codes_list = requests.get('https://discord.com/api/v9/users/@me/outbound-promotions/codes', headers={'Authorization': discord_token}).json()
             if gift_codes_list:
                 codes_list = []
-                for gift_code in gift_codes_list:
-                    promotion_name = gift_code['promotion']['outbound_title']
-                    code_value = gift_code['code']
-                    code_data = f"Gift: {promotion_name}
-Code: {code_value}"
-                    if len('
-
-'.join(codes_list)) + len(code_data) >= 1024:
-                        break
-                    codes_list.append(code_data)
-                if len(codes_list) > 0:
-                    gift_codes = '
-
-'.join(codes_list)
-                else:
-                    gift_codes = "None"
-            else:
-                gift_codes = "None"
+                for g in gift_codes_list:
+                    promo = g.get('promotion', {}).get('outbound_title', '')
+                    code = g.get('code', '')
+                    codes_list.append(f"Gift: {promo}\nCode: {code}")
+                gift_codes = '\n\n'.join(codes_list)
         except:
-            gift_codes = "None"
+            pass
 
     except Exception as e:
         print(f"{BEFORE + AFTER} {ERROR} Error when retrieving information: {white}{e}")
@@ -208,17 +182,18 @@ Code: {code_value}"
  {INFO_ADD} Flags        : {white}{flags}{red}
  {INFO_ADD} Public Flags : {white}{public_flags}{red}
  {INFO_ADD} NSFW         : {white}{nsfw_allowed}{red}
- {INFO_ADD} Multi-Factor Authentication : {white}{mfa_enabled}{red}
- {INFO_ADD} Authenticator Type          : {white}{authenticator_types}{red}
+ {INFO_ADD} MFA          : {white}{mfa_enabled}{red}
+ {INFO_ADD} Authenticator: {white}{authenticator_types}{red}
  {INFO_ADD} Billing      : {white}{payment_methods}{red}
- {INFO_ADD} Gift Code    : {white}{gift_codes}{red}
+ {INFO_ADD} Gift Codes   : {white}{gift_codes}{red}
  {INFO_ADD} Guilds       : {white}{total_guilds}{red}
  {INFO_ADD} Owner Guilds : {white}{owned_guild_count}{owned_guild_names}{red}
  {INFO_ADD} Bio          : {white}{bio}{red}
- {INFO_ADD} Friend       : {white}{friends}{red}
+ {INFO_ADD} Friends      : {white}{friends}{red}
 {white}────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     """)
     Continue()
     Reset()
+
 except Exception as e:
     Error(e)

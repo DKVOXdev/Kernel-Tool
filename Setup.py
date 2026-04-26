@@ -1,11 +1,11 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------>
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please cont>
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez>
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
 import subprocess
@@ -13,42 +13,58 @@ import sys
 from pathlib import Path
 import os
 
-requirements_file = "requirements.txt"
-main_script = "kernel.py"
+GREEN = "\033[32m"
+BOLD_GREEN = "\033[1;32m"
+RESET = "\033[0m"
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
+def print_green(text):
+    print(f"{GREEN}{text}{RESET}")
+
+def print_bold_green(text):
+    print(f"{BOLD_GREEN}{text}{RESET}")
+
 clear()
 
+print_bold_green("=" * 60)
+print_bold_green("          KERNEL TOOL - INSTALLER")
+print_bold_green("=" * 60)
+print()
+
+requirements_file = "requirements.txt"
+main_script = "kernel.py"
+
 if not Path(requirements_file).exists():
-    print(f"[!] File {requirements_file} not found.")
+    print_green(f"[!] File {requirements_file} not found.")
     sys.exit(1)
 
-print("[*] Updating pip...")
+print_green("[*] Updating pip...")
 try:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "pip"])
-    print("[✓] Pip updated successfully.")
+    print_green("[✓] Pip updated successfully.")
 except subprocess.CalledProcessError:
-    print("[!] Unable to update pip, continuing...")
+    print_green("[!] Unable to update pip, continuing...")
 
 with open(requirements_file, "r", encoding="utf-8") as f:
     packages = [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
 if packages:
     for pkg in packages:
-        print(f"[*] Installing {pkg}...")
+        print_green(f"[*] Installing {pkg}...")
         try:
             subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
-            print(f"[✓] {pkg} installed successfully.")
+            print_green(f"[✓] {pkg} installed successfully.")
         except subprocess.CalledProcessError:
-            print(f"[✗] Failed to install {pkg}")
+            print_green(f"[✗] Failed to install {pkg}")
 else:
-    print("[!] No modules to install in requirements.txt")
+    print_green("[!] No modules to install in requirements.txt")
 
 if not Path(main_script).exists():
-    print(f"[!] Script {main_script} not found.")
+    print_green(f"[!] Script {main_script} not found.")
     sys.exit(1)
 
-print(f"[*] Launching {main_script}...\n")
+print_green(f"[*] Launching {main_script}...\n")
+
 os.system(f'"{sys.executable}" "{main_script}"')
