@@ -7,42 +7,37 @@
 
 ## Multifunctional Tools
 
-Kernel-Tools is a multifunctional toolkit developed in Python
-The software is available on Windows and Linux.
+Kernel-Tools is a multifunctional toolkit developed in Python  
+The software is available on Windows and Linux.  
 The interface and tools are provided in English.
 
-✔ No malware
-✔ No backdoors
-✔ Free for everyone
-✔ Frequent updates
+✔ No malware  
+✔ No backdoors  
+✔ Free for everyone  
+✔ Frequent updates  
 
 The software is open-source and provided only for educational and verification purposes to ensure no malicious programs are included.
 
 ## Included Features
-🔍 Analysis & OSINT
-🛠 Various Utilities
-🧱 Builders
-🎮 Roblox Modules
-💬 Discord Tools
-➕ And much more
+🔍 Analysis & OSINT  
+🛠 Various Utilities  
+🧱 Builders  
+🎮 Roblox Modules  
+💬 Discord Tools  
+➕ And much more  
 
 ## Security & Transparency
-Kernel-Tools contains no malware, backdoors, or hidden code.
+Kernel-Tools contains no malware, backdoors, or hidden code.  
 The project is designed to be used responsibly and legally.
 
 ## ⚠ Code Protection
-The code is protected by license.
-Direct modification of the code is prohibited.
+The code is protected by license.  
+Direct modification of the code is prohibited.  
 If you want to make changes or suggestions, ask the author first.
-<<<<<<< HEAD
-For any issues or errors,
-=======
-For any issues or errors
->>>>>>> bf67875 (update)
 
 ## Disclaimer
-Kernel-Tools is developed exclusively for educational purposes.
-Use of the software is at your own risk.
+Kernel-Tools is developed exclusively for educational purposes.  
+Use of the software is at your own risk.  
 All scripts are safe, and files flagged by antivirus software are false positives, no real threat exists.
 
 ## Kernel-Tools Preview
