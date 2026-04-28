@@ -4,13 +4,6 @@ color 0A
 
 REM # Copyright (c) Kernel-Tool
 REM # See the file 'LICENSE' for copying permission
-REM # ----------------------------------------------------------------------------
-REM # EN:
-REM #     - Do not touch or modify the code below. If there is an error, please contact us.
-REM #     - Do not resell this tool, do not credit it to yours.
-REM # FR:
-REM #     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez nous contacter.
-REM #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
 
 echo ========================================
 echo    Kernel-Tools - Auto Setup
@@ -48,13 +41,19 @@ echo Please wait, this may take a few minutes...
 "%PYTHON_INSTALLER%" /quiet InstallAllUsers=1 PrependPath=1 Include_pip=1 AssociateFiles=1
 
 echo [INFO] Waiting for installation to complete...
-timeout /t 5 /nobreak >nul
+timeout /t 10 /nobreak >nul
 
 echo [INFO] Cleaning up installer...
 del "%PYTHON_INSTALLER%"
 
 echo [OK] Python 3.11.9 installed successfully
 echo.
+
+REM ✅ FIX PATH - Recharger les variables d'environnement sans relancer le CMD
+echo [INFO] Refreshing PATH...
+for /f "tokens=2*" %%A in ('reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path 2^>nul') do set "SYS_PATH=%%B"
+for /f "tokens=2*" %%A in ('reg query "HKCU\Environment" /v Path 2^>nul') do set "USR_PATH=%%B"
+set "PATH=%SYS_PATH%;%USR_PATH%"
 
 echo [INFO] Updating pip...
 python -m pip install --upgrade pip
@@ -68,7 +67,6 @@ echo.
 
 if not exist "requirements.txt" (
     echo [ERROR] requirements.txt file not found
-    echo Make sure this batch file is in the same folder as requirements.txt
     pause
     exit /b 1
 )
@@ -93,7 +91,6 @@ echo.
 
 if not exist "kernel.py" (
     echo [ERROR] File 'kernel.py' not found
-    echo Make sure this batch file is in the same folder as the Python script
     pause
     exit /b 1
 )
