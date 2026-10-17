@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
 # ------------------------------------------------------------------------------------------------
@@ -70,7 +69,8 @@ def get_roblox_info(username_input):
         return None
 
 def main():
-    print(roblox_banner)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(pseudo_info_banner)
 
     while True:
         username_input = input(f"{LC}[{current_time_hour()}] [INPUT] Roblox Username -> {RS}").strip()
@@ -99,4 +99,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

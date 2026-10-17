@@ -19,6 +19,8 @@ except Exception as e:
     ErrorModule(e)
 
 Title("Username Tracker")
+Reset()
+print(username_tracker_banner)
 
 try:
     user_agent = ChoiceUserAgent()

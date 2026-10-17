@@ -1,14 +1,18 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 import os
+import sys
 from colorama import init, Fore
 from pathlib import Path
 from Config.Util import *
@@ -19,11 +23,13 @@ init(autoreset=True)
 OUTPUT_DIR = Path('output')
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-DOX = input(Fore.CYAN + "[?] Dox name? : ")
-
 def collect_information():
 
     Title("Create Dox")
+    Reset()
+    print(create_dox_banner)
+
+    DOX = input(Fore.CYAN + "[?] Dox name? : ")
 
     Name = input(Fore.CYAN + '[?] What is the victim\'s name? : ')
     Surname = input(Fore.CYAN + "[?] What is the victim's surname? : ")
@@ -108,7 +114,7 @@ def collect_information():
 ╠╣  »Date of Birth: {Date}
 ╠╣  »Country: {Country}
 ╠╣  »City: {City}
-╠╣  »Address: {Address}                                                          
+╠╣  »Address: {Address}
 ╠╣  »Email Address: {Email_Address}
 ╠╣  »Phone Number: {Phone_Number}
 ╠╣  »Educational or Professional Situation: {Situation}
@@ -131,7 +137,7 @@ def collect_information():
 ╠╣  »Father's Age: {Father_Age}
 ╠╣  »Father's Place of Residence: {Father_Residence_Location}
 ╠╣  »Father's Profession: {Father_Profession}
-╠╣  »Other Information about the Father: {Father_Additional_Info}                
+╠╣  »Other Information about the Father: {Father_Additional_Info}
 ╠╣╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
 ╠╣╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩
 ╠╣                      MOTHER'S INFORMATION
@@ -143,7 +149,7 @@ def collect_information():
 ╠╣  »Mother's Place of Residence: {Mother_Residence_Location}
 ╠╣  »Mother's Profession: {Mother_Profession}
 ╠╣  »Mother's Interests: {Mother_Interests}
-╠╣  »Other Information about the Mother: {Mother_Additional_Info}                
+╠╣  »Other Information about the Mother: {Mother_Additional_Info}
 ╠╣╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦
 ╠╣╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩
 ╠╣                      PC INFORMATION
@@ -166,10 +172,10 @@ def collect_information():
     with open(output_file_path, "w", encoding="utf-8") as fichier:
         fichier.write(custom_content)
 
-    return output_file_path
+    return output_file_path, DOX
 
 
 if __name__ == "__main__":
-    output_file_path = collect_information()
+    output_file_path, DOX = collect_information()
     print(Fore.CYAN + f"[+] The file {DOX}.txt has been saved to: {output_file_path}")
     input(Fore.CYAN + "Press Enter to continue...")

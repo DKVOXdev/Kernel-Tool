@@ -12,12 +12,14 @@ import os
 import sys
 import json
 import time
-from datetime import datetime
+import datetime as _dt
 from faker import Faker
 import random
 from colorama import Fore, Style, init
 from Config.Config import *
 from Config.Util import *
+
+datetime = _dt.datetime
 
 init(autoreset=True)
 
@@ -32,7 +34,8 @@ selected_country = "1"
 fake = Faker(countries[selected_country][1])
 
 def header():
-    print(fake_identity_banner)
+    Clear()
+    print(fake_identite_banner)
 
 def label(text):
     return f"\033[96m{text:<30}\033[0m"
@@ -203,6 +206,7 @@ def display_identity(data):
     choice = input(f"\033[96m\n {INPUT} Choice: \033[0m").strip().upper()
     if choice == "E":
         export_identity(data)
+        Continue()
     elif choice == "C":
         try:
             import pyperclip
@@ -210,7 +214,7 @@ def display_identity(data):
             print(f"\033[96m\n {INFO_ADD} Copied to clipboard!\033[0m")
         except ImportError:
             print(f"\033[96m {ERROR} pyperclip not installed.\033[0m")
-    Continue()
+        Continue()
 
 def generate_random():
     display_identity(create_identity("random"))
@@ -403,7 +407,7 @@ try:
             elif choice == "8":
                 view_history()
             elif choice == "9":
-                print(f"\033[96m\n {INFO_ADD} Au revoir!\033[0m")
+                print(f"\033[96m\n {INFO_ADD} Goodbye!\033[0m")
                 sys.exit(0)
             else:
                 Error("Invalid choice.")
@@ -411,4 +415,3 @@ try:
     main()
 except Exception as e:
     Error(e)
-

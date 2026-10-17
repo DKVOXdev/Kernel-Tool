@@ -1,5 +1,15 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
+# ------------------------------------------------------------------------------------------------
+# EN:
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR:
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 from Config.Util import *
 from Config.Config import *
@@ -15,6 +25,8 @@ _ = "\033[96m"
 _r = "\033[0m"
 
 Title("Cookie Login")
+Reset()
+print(cookie_login_banner)
 
 try:
     roblox_cookie = input(f"\n{_} {INPUT} Cookie -> {_r}")

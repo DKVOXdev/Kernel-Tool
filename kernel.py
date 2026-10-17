@@ -1,3 +1,16 @@
+# Copyright (c) Kernel-Tool
+# See the file 'LICENSE' for copying permission
+# ------------------------------------------------------------------------------------------------
+# EN:
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
+#     - Do not resell this tool, do not credit it to yours.
+# FR:
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
+
 import os
 import sys
 import shutil
@@ -98,10 +111,9 @@ def print_logo():
     print("\n")
 
 OPTIONS = {
-    '01': 'Website-Strength-Scanner',
-    '02': 'Website-Status',
-    '03': 'Arpspoofing',
-    '10': 'Rat-Bluid',
+    '01': 'Web-Scanner',
+    '02': 'Arpspoofing',
+    '10': 'Rat-Build',
     '11': 'Grabber-Build',
     '12': 'Stealer-Build',
     '20': 'Cookie-Login',
@@ -116,7 +128,7 @@ OPTIONS = {
     '37': 'Webhook-Spammer',
     '38': 'Discord-Nuker',
     '40': 'Ip-Lookup',
-    '41': 'Mail-Info',
+    '41': 'Email-Tracker',
     '42': 'Phone-Lookup',
     '43': 'Username-Tracker',
     '45': 'Lookup-Ghitub',
@@ -130,7 +142,7 @@ OPTIONS = {
 }
 
 MENU_PAGES = {
-    '1': {'title': ' Network ', 'categories': [{'title': ' Network ', 'options': ['01', '02','03'], 'color': '#FF4444'}]},
+    '1': {'title': ' Network ', 'categories': [{'title': ' Network ', 'options': ['01', '02'], 'color': '#FF4444'}]},
     '2': {'title': ' OSINT ', 'categories': [{'title': ' OSINT ', 'options': ['40','41','42','43','45','46'], 'color': '#00D4FF'}]},
     '3': {'title': ' Roblox ', 'categories': [{'title': ' Roblox ', 'options': ['20', '21'], 'color': '#FF8844'}]},
     '4': {'title': ' Discord ', 'categories': [{'title': ' Discord ', 'options': ['30','31','32','33','34','35','36','37','38'], 'color': '#FFD700'}]},
@@ -139,9 +151,9 @@ MENU_PAGES = {
 }
 
 NO_COLOR_FILTER = [
-    'Website-Strength-Scanner', 'Website-Status', 'Cookie-Login', 'Pseudo-Info', 'Nitro-Gen',
+    'Web-Scanner', 'Cookie-Login', 'Pseudo-Info', 'Nitro-Gen',
     'Token-Info', 'Token-Login', 'Token-Server-Join', 'Token-Block-Friends', 'Token-Change-Language',
-    'Delete-Webhook', 'Webhook-Spammer', 'Ip-Lookup', 'Mail-Info', 'Phone-Lookup', 'Username-Tracker',
+    'Delete-Webhook', 'Webhook-Spammer', 'Ip-Lookup', 'Email-Tracker', 'Phone-Lookup', 'Username-Tracker',
     'Lookup-Ghitub', 'Fake-Identite', 'create-dox', 'zip-cracker'
 ]
 

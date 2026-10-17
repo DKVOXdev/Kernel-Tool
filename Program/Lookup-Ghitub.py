@@ -1,11 +1,15 @@
 # Copyright (c) Kernel-Tool
 # See the file 'LICENSE' for copying permission
+# ------------------------------------------------------------------------------------------------
 # EN:
-#     - Do not touch or modify the code below. If there is an error, please contact the owner, but under no circumstances should you touch the code.
+#     - Do not touch or modify the code below. If there is an error, please contact the owner,
+#       but under no circumstances should you touch the code.
 #     - Do not resell this tool, do not credit it to yours.
 # FR:
-#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le propriétaire, mais en aucun cas vous ne devez toucher au code.
+#     - Ne pas toucher ni modifier le code ci-dessous. En cas d'erreur, veuillez contacter le
+#       propriétaire, mais en aucun cas vous ne devez toucher au code.
 #     - Ne revendez pas ce tool, ne le créditez pas au vôtre.
+# ------------------------------------------------------------------------------------------------
 
 import requests
 from datetime import datetime
@@ -84,6 +88,8 @@ def count_starred_projects(username):
     return len(starred)
 
 Title("Lookup Github")
+Clear()
+print(github_lookup_banner)
 
 try:
     username = input(f"\033[96m {INPUT} GitHub Username -> \033[0m").strip()
@@ -91,13 +97,13 @@ try:
     if not username:
         print(f"\033[96m {ERROR} No username entered.\033[0m")
         Continue()
-        Reset()
+        Clear()
     else:
         user = get_user_info(username)
         if not user:
             print(f"\033[96m {ERROR} User not found.\033[0m")
             Continue()
-            Reset()
+            Clear()
         else:
             name, email = get_email_from_commits(username)
             repos = get_paginated_data(f"https://api.github.com/users/{username}/repos")
@@ -129,7 +135,7 @@ try:
 \033[0m""")
 
             Continue()
-            Reset()
+            Clear()
 
 except Exception as e:
     Error(e)

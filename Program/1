@@ -1,0 +1,34 @@
+import os
+
+HEADER = "# Copyright (c) Kernel-Tool"
+
+missing = []
+has_header = []
+
+for root, _, files in os.walk("."):
+    for f in files:
+        if not f.endswith(".py"):
+            continue
+        path = os.path.join(root, f)
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as fh:
+                first_line = fh.readline().strip()
+            if first_line == HEADER:
+                has_header.append(path)
+            else:
+                missing.append(path)
+        except:
+            missing.append(path)
+
+print("=" * 50)
+print(f"  HEADER PRESENT  ({len(has_header)} fichiers)")
+print("=" * 50)
+for p in has_header:
+    print(f"  [OK] {p}")
+
+print()
+print("=" * 50)
+print(f"  HEADER MANQUANT ({len(missing)} fichiers)")
+print("=" * 50)
+for p in missing:
+    print(f"  [X]  {p}")
